@@ -46,7 +46,7 @@ export const NameEditor = memo(function NameEditor({
   return (
     <div className="space-y-2">
       {names.map((name, index) => (
-        <div key={index} className="flex items-center gap-2">
+        <div key={`${mode}-${index}`} className="flex items-center gap-2">
           {editingIndex === index ? (
             <>
               <Input

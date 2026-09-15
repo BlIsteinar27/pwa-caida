@@ -13,6 +13,7 @@ Aplicación web progresiva (PWA) para llevar el puntaje del juego de cartas "Cai
 - **Interfaz responsive**: Diseño optimizado para móviles y tablets
 - **Modo equipos**: Muestra nombres de jugadores por equipo
 - **Diálogos de confirmación**: Prevención de acciones destructivas
+- **Optimización de rendimiento**: Componentes memoizados y cálculos optimizados para una experiencia fluida
 
 ## Tecnologías
 
@@ -89,6 +90,17 @@ El estado del juego incluye:
 - Contador de victorias
 
 Los datos se persisten automáticamente en localStorage con la clave `caida-game-state`.
+
+## Optimizaciones de rendimiento
+
+La aplicación implementa varias optimizaciones para garantizar una experiencia fluida:
+
+- **Componentes memoizados**: `ModeSelector`, `ScoreBoard`, `NameEditor`, y `NumericKeypad` usan `React.memo` para evitar re-renders innecesarios
+- **useMemo para cálculos costosos**: Cálculos como nombres de jugadores y valores parseados se memoizan para evitar repetición
+- **useCallback para handlers**: Funciones de evento se memoizan para estabilidad de referencias
+- **Optimización de localStorage**: El estado se guarda solo cuando cambian datos relevantes, reduciendo escrituras en storage
+- **Keys estables**: Las listas usan keys compuestos para evitar problemas de renderizado
+- **Lazy de handlers**: Handlers vacíos se eliminan para evitar re-renders innecesarios
 
 ## Despliegue
 

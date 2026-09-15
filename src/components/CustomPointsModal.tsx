@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { NumericKeypad } from "./NumericKeypad";
@@ -18,6 +18,11 @@ export function CustomPointsModal({
 }: Props) {
   const [currentValue, setCurrentValue] = useState("");
 
+  const parsedValue = useMemo(
+    () => parseInt(currentValue) || 0,
+    [currentValue],
+  );
+
   const handleNumber = (num: number) => {
     if (currentValue.length < 2) {
       setCurrentValue(currentValue + num.toString());
@@ -33,9 +38,8 @@ export function CustomPointsModal({
   };
 
   const handleConfirm = () => {
-    const points = parseInt(currentValue) || 0;
-    if (points > 0 && points <= 24) {
-      onConfirm(points);
+    if (parsedValue > 0 && parsedValue <= 24) {
+      onConfirm(parsedValue);
       setCurrentValue("");
       onClose();
     }

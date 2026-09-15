@@ -5,7 +5,7 @@ import { GameSetupModal } from "./GameSetupModal";
 import { CustomPointsModal } from "./CustomPointsModal";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { useConfirmations } from "../utils/confirmations";
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useMemo } from "react";
 
 interface Props {
   state: GameState;
@@ -37,6 +37,14 @@ export const ScoreBoard = memo(function ScoreBoard({
     confirmResetAll,
     closeConfirmation,
   } = useConfirmations();
+
+  const selectedPlayerName = useMemo(() => {
+    if (selectedPlayerId === null) return "";
+    if (state.mode === "teams") {
+      return state.teams.find((t) => t.id === selectedPlayerId)?.name || "";
+    }
+    return state.players.find((p) => p.id === selectedPlayerId)?.name || "";
+  }, [selectedPlayerId, state.mode, state.teams, state.players]);
 
   const renderPlayers = useCallback(() => {
     if (state.mode === "teams") {
@@ -263,13 +271,7 @@ export const ScoreBoard = memo(function ScoreBoard({
         isOpen={customPointsOpen}
         onClose={() => setCustomPointsOpen(false)}
         onConfirm={handleCustomPoints}
-        playerName={
-          selectedPlayerId !== null
-            ? state.mode === "teams"
-              ? state.teams.find((t) => t.id === selectedPlayerId)?.name || ""
-              : state.players.find((p) => p.id === selectedPlayerId)?.name || ""
-            : ""
-        }
+        playerName={selectedPlayerName}
       />
 
       <ConfirmDialog

@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useMemo } from "react";
 import {
   gameReducer,
   initialGameState,
@@ -31,9 +31,14 @@ export default function App() {
     500,
   );
 
+  const stateForStorage = useMemo(
+    () => state,
+    [state.mode, state.players, state.teams, state.history],
+  );
+
   useEffect(() => {
-    setLocalStorageState(state);
-  }, [state, setLocalStorageState]);
+    setLocalStorageState(stateForStorage);
+  }, [stateForStorage, setLocalStorageState]);
 
   const handleInitGame = (
     mode: GameMode,

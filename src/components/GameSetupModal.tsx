@@ -68,7 +68,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={undefined}>
       <DialogContent className="bg-white border border-purple-200 text-gray-800 max-w-md shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-gray-800 text-center">
