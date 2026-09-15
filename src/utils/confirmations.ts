@@ -1,73 +1,87 @@
-import Swal from "sweetalert2";
+import { useState, useCallback } from "react";
 
-export const confirmResetSeries = async (): Promise<boolean> => {
-  const result = await Swal.fire({
-    title: "¿Reiniciar serie?",
-    text: "Se perderán todas las victorias acumuladas",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, reiniciar",
-    cancelButtonText: "Cancelar",
-    customClass: {
-      popup:
-        "bg-white/90 backdrop-blur-md border border-purple-200 rounded-lg shadow-xl",
-      title: "text-gray-800 font-bold text-lg",
-      htmlContainer: "text-gray-600",
-      confirmButton:
-        "bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded",
-      cancelButton:
-        "bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded",
-      actions: "gap-2 flex flex-row-reverse",
-    },
-    buttonsStyling: false,
-  });
-  return result.isConfirmed;
-};
+interface ConfirmationState {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  variant: "danger" | "warning" | "info";
+  confirmText: string;
+  cancelText: string;
+  onConfirm: () => void;
+}
 
-export const confirmResetAll = async (): Promise<boolean> => {
-  const result = await Swal.fire({
-    title: "¿Reiniciar todo?",
-    text: "Se perderá toda la configuración y progreso",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, reiniciar",
-    cancelButtonText: "Cancelar",
-    customClass: {
-      popup:
-        "bg-white/90 backdrop-blur-md border border-purple-200 rounded-lg shadow-xl",
-      title: "text-gray-800 font-bold text-lg",
-      htmlContainer: "text-gray-600",
-      confirmButton:
-        "bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded",
-      cancelButton:
-        "bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded",
-      actions: "gap-2 flex flex-row-reverse",
-    },
-    buttonsStyling: false,
+export function useConfirmations() {
+  const [confirmation, setConfirmation] = useState<ConfirmationState>({
+    isOpen: false,
+    title: "",
+    message: "",
+    variant: "warning",
+    confirmText: "Confirmar",
+    cancelText: "Cancelar",
+    onConfirm: () => {},
   });
-  return result.isConfirmed;
-};
 
-export const confirmResetPoints = async (): Promise<boolean> => {
-  const result = await Swal.fire({
-    title: "¿Reiniciar puntos?",
-    text: "Se reiniciarán los puntos de la partida actual",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, reiniciar",
-    cancelButtonText: "Cancelar",
-    customClass: {
-      popup:
-        "bg-white/90 backdrop-blur-md border border-purple-200 rounded-lg shadow-xl",
-      title: "text-gray-800 font-bold text-lg",
-      htmlContainer: "text-gray-600",
-      confirmButton:
-        "bg-purple-500 hover:bg-purple-400 text-white font-bold py-2 px-4 rounded",
-      cancelButton:
-        "bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded",
-      actions: "gap-2 flex flex-row-reverse",
-    },
-    buttonsStyling: false,
-  });
-  return result.isConfirmed;
-};
+  const confirmResetPoints = useCallback(
+    (): Promise<boolean> =>
+      new Promise((resolve) => {
+        setConfirmation({
+          isOpen: true,
+          title: "¿Reiniciar puntos?",
+          message: "Se reiniciarán los puntos de la partida actual",
+          variant: "warning",
+          confirmText: "Sí, reiniciar",
+          cancelText: "Cancelar",
+          onConfirm: () => resolve(true),
+        });
+      }),
+    [],
+  );
+
+  const confirmResetSeries = useCallback(
+    (): Promise<boolean> =>
+      new Promise((resolve) => {
+        setConfirmation({
+          isOpen: true,
+          title: "¿Reiniciar serie?",
+          message: "Se perderán todas las victorias acumuladas",
+          variant: "danger",
+          confirmText: "Sí, reiniciar",
+          cancelText: "Cancelar",
+          onConfirm: () => resolve(true),
+        });
+      }),
+    [],
+  );
+
+  const confirmResetAll = useCallback(
+    (): Promise<boolean> =>
+      new Promise((resolve) => {
+        setConfirmation({
+          isOpen: true,
+          title: "¿Reiniciar todo?",
+          message: "Se perderá toda la configuración y progreso",
+          variant: "danger",
+          confirmText: "Sí, reiniciar",
+          cancelText: "Cancelar",
+          onConfirm: () => resolve(true),
+        });
+      }),
+    [],
+  );
+
+  const closeConfirmation = useCallback((confirmed: boolean) => {
+    setConfirmation((prev) => ({ ...prev, isOpen: false }));
+    if (!confirmed) {
+      // Resolve as false when cancelled
+      return;
+    }
+  }, []);
+
+  return {
+    confirmation,
+    confirmResetPoints,
+    confirmResetSeries,
+    confirmResetAll,
+    closeConfirmation,
+  };
+}

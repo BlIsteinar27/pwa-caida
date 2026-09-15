@@ -1,4 +1,5 @@
 import { Button } from "./ui/button";
+import { memo } from "react";
 
 interface Props {
   onNumber: (num: number) => void;
@@ -6,7 +7,11 @@ interface Props {
   onBackspace: () => void;
 }
 
-export function NumericKeypad({ onNumber, onClear, onBackspace }: Props) {
+export const NumericKeypad = memo(function NumericKeypad({
+  onNumber,
+  onClear,
+  onBackspace,
+}: Props) {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
   return (
@@ -15,7 +20,7 @@ export function NumericKeypad({ onNumber, onClear, onBackspace }: Props) {
         <Button
           key={num}
           onClick={() => onNumber(num)}
-          className="bg-white/80 backdrop-blur-md border border-purple-200 hover:bg-white/90 text-purple-700 text-2xl font-bold h-12 rounded-lg shadow-md transition-all"
+          className="bg-white/80 border border-purple-200 hover:bg-white/90 text-purple-700 text-2xl font-bold h-12 rounded-lg shadow-md transition-colors"
           variant="secondary"
         >
           {num}
@@ -23,18 +28,18 @@ export function NumericKeypad({ onNumber, onClear, onBackspace }: Props) {
       ))}
       <Button
         onClick={onClear}
-        className="bg-red-100/80 backdrop-blur-md border border-red-300 hover:bg-red-200/80 text-red-600 font-bold h-12 rounded-lg shadow-md transition-all"
+        className="bg-red-100/80 border border-red-300 hover:bg-red-200/80 text-red-600 font-bold h-12 rounded-lg shadow-md transition-colors"
         variant="outline"
       >
         C
       </Button>
       <Button
         onClick={onBackspace}
-        className="bg-purple-100/80 backdrop-blur-md border border-purple-200 hover:bg-purple-200/80 text-purple-600 font-bold h-12 rounded-lg shadow-md transition-all"
+        className="bg-purple-100/80 border border-purple-200 hover:bg-purple-200/80 text-purple-600 font-bold h-12 rounded-lg shadow-md transition-colors"
         variant="outline"
       >
         ⌫
       </Button>
     </div>
   );
-}
+});

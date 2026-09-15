@@ -69,7 +69,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="bg-white/90 backdrop-blur-md border border-purple-200 text-gray-800 max-w-md shadow-xl">
+      <DialogContent className="bg-white/90 border border-purple-200 text-gray-800 max-w-md shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-gray-800 text-center">
             Configurar Partida
@@ -118,7 +118,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
           </div>
 
           <Button
-            className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold backdrop-blur-sm"
+            className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold"
             onClick={handleStartGame}
           >
             Iniciar Partida

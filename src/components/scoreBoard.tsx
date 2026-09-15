@@ -4,12 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GameSetupModal } from "./GameSetupModal";
 import { CustomPointsModal } from "./CustomPointsModal";
-import {
-  confirmResetSeries,
-  confirmResetAll,
-  confirmResetPoints,
-} from "../utils/confirmations";
-import { useState } from "react";
+import { ConfirmDialog } from "./ConfirmDialog";
+import { useConfirmations } from "../utils/confirmations";
+import { useState, useCallback, memo } from "react";
 
 interface Props {
   state: GameState;
@@ -22,7 +19,7 @@ interface Props {
   onInitGame: (mode: any, names: string[], teamNames?: string[]) => void;
 }
 
-export function ScoreBoard({
+export const ScoreBoard = memo(function ScoreBoard({
   state,
   onAddPoints,
   onUndo,
@@ -34,15 +31,22 @@ export function ScoreBoard({
 }: Props) {
   const [customPointsOpen, setCustomPointsOpen] = useState(false);
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
+  const {
+    confirmation,
+    confirmResetPoints,
+    confirmResetSeries,
+    confirmResetAll,
+    closeConfirmation,
+  } = useConfirmations();
 
-  const renderPlayers = () => {
+  const renderPlayers = useCallback(() => {
     if (state.mode === "teams") {
       return (
         <div className="grid grid-cols-2 gap-4 flex-1 my-2">
           {state.teams.map((team) => (
             <Card
               key={team.id}
-              className="bg-white/70 backdrop-blur-md border border-white/40 shadow-lg flex flex-col justify-between hover:bg-white/80 transition-all"
+              className="bg-white/70 border border-white/40 shadow-lg flex flex-col justify-between hover:bg-white/80 transition-colors"
             >
               <CardHeader className="p-3 pb-0 text-center">
                 <CardTitle className="text-lg text-gray-800 truncate font-semibold">
@@ -71,7 +75,7 @@ export function ScoreBoard({
         {state.players.map((player) => (
           <Card
             key={player.id}
-            className="bg-white/70 backdrop-blur-md border border-white/40 shadow-lg flex flex-col justify-between hover:bg-white/80 transition-all"
+            className="bg-white/70 border border-white/40 shadow-lg flex flex-col justify-between hover:bg-white/80 transition-colors"
           >
             <CardHeader className="p-3 pb-0 text-center">
               <CardTitle className="text-lg text-gray-800 truncate font-semibold">
@@ -91,17 +95,17 @@ export function ScoreBoard({
         ))}
       </div>
     );
-  };
+  }, [state.mode, state.teams, state.players]);
 
-  const renderPointButtons = () => {
+  const renderPointButtons = useCallback(() => {
     const cantos = [
       { label: "+1", pts: 1 },
       { label: "+2", pts: 2 },
       { label: "+3", pts: 3 },
       { label: "+4", pts: 4 },
-      { label: "Patrulla (+6)", pts: 6 },
-      { label: "Vigía (+7)", pts: 7 },
-      { label: "Registro (+12)", pts: 12 },
+      { label: "Patrulla", pts: 6 },
+      { label: "Vigía", pts: 7 },
+      { label: "Registro", pts: 12 },
     ];
 
     const participants = state.mode === "teams" ? state.teams : state.players;
@@ -118,7 +122,7 @@ export function ScoreBoard({
                 <Button
                   key={canto.pts}
                   variant="secondary"
-                  className="h-12 text-lg font-bold bg-white/80 backdrop-blur-md border border-white/60 shadow-md hover:bg-white/90 hover:shadow-lg active:scale-95 transition-all text-purple-700"
+                  className="h-12 text-lg font-bold bg-white/80 border border-white/60 shadow-md hover:bg-white/90 hover:shadow-lg transition-colors text-purple-700"
                   onClick={() => onAddPoints(participant.id, canto.pts)}
                 >
                   {canto.label}
@@ -130,7 +134,7 @@ export function ScoreBoard({
                 <Button
                   key={canto.pts}
                   variant="outline"
-                  className="h-9 text-xs border-purple-200 bg-purple-50/80 backdrop-blur-md hover:bg-purple-100/80 active:scale-95 transition-all text-purple-600"
+                  className="h-9 text-xs border-purple-200 bg-purple-50/80 hover:bg-purple-100/80 transition-colors text-purple-600"
                   onClick={() => onAddPoints(participant.id, canto.pts)}
                 >
                   {canto.label}
@@ -138,7 +142,7 @@ export function ScoreBoard({
               ))}
               <Button
                 variant="outline"
-                className="h-9 text-xs border-pink-300 bg-pink-50/80 backdrop-blur-md hover:bg-pink-100/80 active:scale-95 transition-all text-pink-600"
+                className="h-9 text-xs border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 transition-colors text-pink-600"
                 onClick={() => {
                   setSelectedPlayerId(participant.id);
                   setCustomPointsOpen(true);
@@ -151,41 +155,44 @@ export function ScoreBoard({
         ))}
       </div>
     );
-  };
+  }, [state.mode, state.teams, state.players, onAddPoints]);
 
-  const handleResetPoints = async () => {
+  const handleResetPoints = useCallback(async () => {
     const confirmed = await confirmResetPoints();
     if (confirmed) {
       onResetPoints();
     }
-  };
+  }, [confirmResetPoints, onResetPoints]);
 
-  const handleResetSeries = async () => {
+  const handleResetSeries = useCallback(async () => {
     const confirmed = await confirmResetSeries();
     if (confirmed) {
       onResetSeries();
     }
-  };
+  }, [confirmResetSeries, onResetSeries]);
 
-  const handleResetAll = async () => {
+  const handleResetAll = useCallback(async () => {
     const confirmed = await confirmResetAll();
     if (confirmed) {
       onResetAll();
     }
-  };
+  }, [confirmResetAll, onResetAll]);
 
-  const handleCustomPoints = (points: number) => {
-    if (selectedPlayerId !== null) {
-      onAddPoints(selectedPlayerId, points);
-    }
-  };
+  const handleCustomPoints = useCallback(
+    (points: number) => {
+      if (selectedPlayerId !== null) {
+        onAddPoints(selectedPlayerId, points);
+      }
+    },
+    [selectedPlayerId, onAddPoints],
+  );
 
   return (
     <div className="flex flex-col h-screen max-w-md mx-auto p-4 justify-between bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 text-gray-800 select-none overflow-y-auto">
       <div className="flex justify-between items-center mb-2">
         <Badge
           variant="outline"
-          className="text-purple-700 border-purple-300 bg-purple-100/50 backdrop-blur-sm"
+          className="text-purple-700 border-purple-300 bg-purple-100/50"
         >
           Modo: {state.mode.toUpperCase()}
         </Badge>
@@ -194,7 +201,7 @@ export function ScoreBoard({
             variant="outline"
             size="sm"
             onClick={handleResetPoints}
-            className="border-purple-300 text-purple-600 hover:bg-purple-100/50 backdrop-blur-sm"
+            className="border-purple-300 text-purple-600 hover:bg-purple-100/50"
           >
             Reiniciar Puntos
           </Button>
@@ -202,7 +209,7 @@ export function ScoreBoard({
             variant="outline"
             size="sm"
             onClick={handleResetSeries}
-            className="border-pink-300 text-pink-600 hover:bg-pink-100/50 backdrop-blur-sm"
+            className="border-pink-300 text-pink-600 hover:bg-pink-100/50"
           >
             Nueva Serie
           </Button>
@@ -210,7 +217,7 @@ export function ScoreBoard({
             variant="outline"
             size="sm"
             onClick={handleResetAll}
-            className="border-red-300 text-red-600 hover:bg-red-100/50 backdrop-blur-sm"
+            className="border-red-300 text-red-600 hover:bg-red-100/50"
           >
             Nueva Partida
           </Button>
@@ -219,7 +226,7 @@ export function ScoreBoard({
             size="sm"
             onClick={onUndo}
             disabled={state.history.length === 0}
-            className="text-gray-700 hover:bg-white/60 backdrop-blur-sm"
+            className="text-gray-700 hover:bg-white/60"
           >
             Deshacer
           </Button>
@@ -229,19 +236,19 @@ export function ScoreBoard({
       {renderPlayers()}
 
       {state.isFinished ? (
-        <Card className="bg-purple-100/80 backdrop-blur-md border-purple-300 p-4 text-center my-2 shadow-lg">
+        <Card className="bg-purple-100/80 border-purple-300 p-4 text-center my-2 shadow-lg">
           <h2 className="text-xl font-bold text-purple-700">
             ¡Ganador: {state.winnerName}!
           </h2>
           <div className="flex gap-2 mt-3">
             <Button
-              className="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold backdrop-blur-sm"
+              className="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold"
               onClick={onNextMatch}
             >
               Siguiente Partida
             </Button>
             <Button
-              className="flex-1 border-purple-300 text-purple-600 hover:bg-purple-100/50 backdrop-blur-sm"
+              className="flex-1 border-purple-300 text-purple-600 hover:bg-purple-100/50"
               onClick={handleResetPoints}
             >
               Reiniciar Puntos
@@ -266,6 +273,17 @@ export function ScoreBoard({
             : ""
         }
       />
+
+      <ConfirmDialog
+        isOpen={confirmation.isOpen}
+        onClose={() => closeConfirmation(false)}
+        onConfirm={confirmation.onConfirm}
+        title={confirmation.title}
+        message={confirmation.message}
+        confirmText={confirmation.confirmText}
+        cancelText={confirmation.cancelText}
+        variant={confirmation.variant}
+      />
     </div>
   );
-}
+});

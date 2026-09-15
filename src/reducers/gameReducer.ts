@@ -91,28 +91,30 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const { playerId, points } = action.payload;
 
       if (state.mode === "teams") {
-        const updatedTeams = state.teams.map((team) => {
-          if (team.id === playerId) {
-            const newScore = team.score + points;
-            return {
-              ...team,
-              score: newScore,
-              players: team.players.map((player) => ({
-                ...player,
-                score: player.score + points,
-              })),
-            };
-          }
-          return team;
-        });
+        const teamIndex = state.teams.findIndex((t) => t.id === playerId);
+        if (teamIndex === -1) return state;
 
-        const winner = updatedTeams.find((t) => t.score >= 24);
-        const isFinished = !!winner;
+        const team = state.teams[teamIndex];
+        const newScore = team.score + points;
 
-        if (isFinished && winner) {
-          updatedTeams.forEach((t) => {
-            if (t.id === winner.id) t.wins += 1;
-          });
+        const updatedTeams = [...state.teams];
+        updatedTeams[teamIndex] = {
+          ...team,
+          score: newScore,
+          players: team.players.map((player) => ({
+            ...player,
+            score: player.score + points,
+          })),
+        };
+
+        const winnerIndex = updatedTeams.findIndex((t) => t.score >= 24);
+        const isFinished = winnerIndex !== -1;
+
+        if (isFinished && winnerIndex !== -1) {
+          updatedTeams[winnerIndex] = {
+            ...updatedTeams[winnerIndex],
+            wins: updatedTeams[winnerIndex].wins + 1,
+          };
         }
 
         return {
@@ -120,25 +122,27 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           teams: updatedTeams,
           history: [...state.history, { playerId, points }],
           isFinished,
-          winnerName: winner ? winner.name : null,
+          winnerName: isFinished ? updatedTeams[winnerIndex].name : null,
         };
       }
 
-      const updatedPlayers = state.players.map((p) => {
-        if (p.id === playerId) {
-          const newScore = p.score + points;
-          return { ...p, score: newScore };
-        }
-        return p;
-      });
+      const playerIndex = state.players.findIndex((p) => p.id === playerId);
+      if (playerIndex === -1) return state;
 
-      const winner = updatedPlayers.find((p) => p.score >= 24);
-      const isFinished = !!winner;
+      const player = state.players[playerIndex];
+      const newScore = player.score + points;
 
-      if (isFinished && winner) {
-        updatedPlayers.forEach((p) => {
-          if (p.id === winner.id) p.wins += 1;
-        });
+      const updatedPlayers = [...state.players];
+      updatedPlayers[playerIndex] = { ...player, score: newScore };
+
+      const winnerIndex = updatedPlayers.findIndex((p) => p.score >= 24);
+      const isFinished = winnerIndex !== -1;
+
+      if (isFinished && winnerIndex !== -1) {
+        updatedPlayers[winnerIndex] = {
+          ...updatedPlayers[winnerIndex],
+          wins: updatedPlayers[winnerIndex].wins + 1,
+        };
       }
 
       return {
@@ -146,7 +150,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         players: updatedPlayers,
         history: [...state.history, { playerId, points }],
         isFinished,
-        winnerName: winner ? winner.name : null,
+        winnerName: isFinished ? updatedPlayers[winnerIndex].name : null,
       };
     }
 
@@ -157,19 +161,23 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const newHistory = state.history.slice(0, -1);
 
       if (state.mode === "teams") {
-        const updatedTeams = state.teams.map((team) => {
-          if (team.id === lastAction.playerId) {
-            return {
-              ...team,
-              score: Math.max(0, team.score - lastAction.points),
-              players: team.players.map((player) => ({
-                ...player,
-                score: Math.max(0, player.score - lastAction.points),
-              })),
-            };
-          }
-          return team;
-        });
+        const teamIndex = state.teams.findIndex(
+          (t) => t.id === lastAction.playerId,
+        );
+        if (teamIndex === -1) return state;
+
+        const team = state.teams[teamIndex];
+        const newScore = Math.max(0, team.score - lastAction.points);
+
+        const updatedTeams = [...state.teams];
+        updatedTeams[teamIndex] = {
+          ...team,
+          score: newScore,
+          players: team.players.map((player) => ({
+            ...player,
+            score: Math.max(0, player.score - lastAction.points),
+          })),
+        };
 
         return {
           ...state,
@@ -180,12 +188,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         };
       }
 
-      const updatedPlayers = state.players.map((p) => {
-        if (p.id === lastAction.playerId) {
-          return { ...p, score: Math.max(0, p.score - lastAction.points) };
-        }
-        return p;
-      });
+      const playerIndex = state.players.findIndex(
+        (p) => p.id === lastAction.playerId,
+      );
+      if (playerIndex === -1) return state;
+
+      const player = state.players[playerIndex];
+      const newScore = Math.max(0, player.score - lastAction.points);
+
+      const updatedPlayers = [...state.players];
+      updatedPlayers[playerIndex] = { ...player, score: newScore };
 
       return {
         ...state,

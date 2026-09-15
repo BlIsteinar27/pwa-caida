@@ -45,7 +45,7 @@ export function CustomPointsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-white/90 backdrop-blur-md border border-purple-200 text-gray-800 max-w-sm shadow-xl">
+      <DialogContent className="bg-white/90 border border-purple-200 text-gray-800 max-w-sm shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-gray-800 text-center text-xl">
             Agregar puntos a {playerName}
@@ -63,13 +63,13 @@ export function CustomPointsModal({
           <div className="flex gap-2">
             <Button
               variant="outline"
-              className="flex-1 border-red-300 text-red-600 hover:bg-red-100/50 backdrop-blur-sm"
+              className="flex-1 border-red-300 text-red-600 hover:bg-red-100/50"
               onClick={onClose}
             >
               Cancelar
             </Button>
             <Button
-              className="flex-1 bg-purple-600 hover:bg-purple-500 text-white backdrop-blur-sm"
+              className="flex-1 bg-purple-600 hover:bg-purple-500 text-white"
               onClick={handleConfirm}
               disabled={
                 !currentValue ||

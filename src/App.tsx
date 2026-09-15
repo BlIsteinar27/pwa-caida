@@ -5,6 +5,7 @@ import {
   STORAGE_KEY,
 } from "./reducers/gameReducer";
 import { ScoreBoard } from "./components/scoreBoard";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 import type { GameMode } from "./types/game";
 
 export default function App() {
@@ -24,9 +25,15 @@ export default function App() {
     },
   );
 
+  const [, setLocalStorageState] = useLocalStorage(
+    STORAGE_KEY,
+    initialGameState,
+    500,
+  );
+
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    setLocalStorageState(state);
+  }, [state, setLocalStorageState]);
 
   const handleInitGame = (
     mode: GameMode,

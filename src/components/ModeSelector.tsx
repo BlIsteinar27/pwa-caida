@@ -1,11 +1,15 @@
 import type { GameMode } from "../types/game";
+import { memo } from "react";
 
 interface Props {
   selectedMode: GameMode;
   onSelect: (mode: GameMode) => void;
 }
 
-export function ModeSelector({ selectedMode, onSelect }: Props) {
+export const ModeSelector = memo(function ModeSelector({
+  selectedMode,
+  onSelect,
+}: Props) {
   const modes = [
     { value: "2p" as GameMode, label: "2 Jugadores", icon: "👤👤" },
     { value: "3p" as GameMode, label: "3 Jugadores", icon: "👤👤👤" },
@@ -19,7 +23,7 @@ export function ModeSelector({ selectedMode, onSelect }: Props) {
         <button
           key={mode.value}
           onClick={() => onSelect(mode.value)}
-          className={`p-4 rounded-lg border-2 transition-all backdrop-blur-md ${
+          className={`p-4 rounded-lg border-2 transition-all ${
             selectedMode === mode.value
               ? "border-purple-400 bg-purple-100/80 shadow-md"
               : "border-purple-200 bg-white/60 hover:bg-white/80 hover:border-purple-300"
@@ -31,4 +35,4 @@ export function ModeSelector({ selectedMode, onSelect }: Props) {
       ))}
     </div>
   );
-}
+});
