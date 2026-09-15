@@ -42,7 +42,7 @@ export function ConfirmDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-white/90 border-purple-200 text-gray-800 max-w-sm shadow-xl">
+      <DialogContent className="bg-white border-purple-200 text-gray-800 max-w-sm shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-gray-800 text-center text-lg font-bold">
             {title}

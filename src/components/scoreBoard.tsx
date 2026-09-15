@@ -1,7 +1,6 @@
 import type { GameState } from "../types/game";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { GameSetupModal } from "./GameSetupModal";
 import { CustomPointsModal } from "./CustomPointsModal";
 import { ConfirmDialog } from "./ConfirmDialog";
@@ -57,6 +56,13 @@ export const ScoreBoard = memo(function ScoreBoard({
                 </span>
               </CardHeader>
               <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
+                <div className="text-xs text-gray-600 mb-2 space-y-1">
+                  {team.players.map((player) => (
+                    <div key={player.id} className="text-gray-500">
+                      {player.name}
+                    </div>
+                  ))}
+                </div>
                 <span className="text-6xl font-black text-purple-600">
                   {team.score}
                 </span>
@@ -189,48 +195,40 @@ export const ScoreBoard = memo(function ScoreBoard({
 
   return (
     <div className="flex flex-col h-screen max-w-md mx-auto p-4 justify-between bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 text-gray-800 select-none overflow-y-auto">
-      <div className="flex justify-between items-center mb-2">
-        <Badge
+      <div className="grid grid-cols-2 gap-2 mb-2">
+        <Button
           variant="outline"
-          className="text-purple-700 border-purple-300 bg-purple-100/50"
+          size="sm"
+          onClick={handleResetPoints}
+          className="border-purple-300 text-purple-600 hover:bg-purple-100/50"
         >
-          Modo: {state.mode.toUpperCase()}
-        </Badge>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetPoints}
-            className="border-purple-300 text-purple-600 hover:bg-purple-100/50"
-          >
-            Reiniciar Puntos
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetSeries}
-            className="border-pink-300 text-pink-600 hover:bg-pink-100/50"
-          >
-            Nueva Serie
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetAll}
-            className="border-red-300 text-red-600 hover:bg-red-100/50"
-          >
-            Nueva Partida
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onUndo}
-            disabled={state.history.length === 0}
-            className="text-gray-700 hover:bg-white/60"
-          >
-            Deshacer
-          </Button>
-        </div>
+          Reiniciar Puntos
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleResetSeries}
+          className="border-pink-300 text-pink-600 hover:bg-pink-100/50"
+        >
+          Nueva Serie
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleResetAll}
+          className="border-red-300 text-red-600 hover:bg-red-100/50"
+        >
+          Nueva Partida
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onUndo}
+          disabled={state.history.length === 0}
+          className="text-gray-700 hover:bg-white/60"
+        >
+          Deshacer
+        </Button>
       </div>
 
       {renderPlayers()}

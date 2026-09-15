@@ -1,78 +1,103 @@
-# React + TypeScript + Vite
+# PWA Caida
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web progresiva (PWA) para llevar el puntaje del juego de cartas "Caida". Diseñada para funcionar en dispositivos móviles y de escritorio con persistencia de datos local.
 
-Currently, two official plugins are available:
+## Características
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Múltiples modos de juego**: 2 jugadores, 3 jugadores, 4 jugadores y modo equipos (2v2)
+- **Sistema de puntuación**: Botones rápidos para los valores más comunes (+1, +2, +3, +4, Patrulla 6, Vigía 7, Registro 12)
+- **Puntuación personalizada**: Teclado numérico para valores personalizados (1-24 puntos)
+- **Persistencia de datos**: El estado del juego se guarda automáticamente en localStorage
+- **Historial de acciones**: Función deshacer para revertir movimientos
+- **Gestión de series**: Control de victorias y partidas
+- **Interfaz responsive**: Diseño optimizado para móviles y tablets
+- **Modo equipos**: Muestra nombres de jugadores por equipo
+- **Diálogos de confirmación**: Prevención de acciones destructivas
 
-## React Compiler
+## Tecnologías
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **React 19** con React Compiler
+- **TypeScript** para tipado estático
+- **Vite** como bundler
+- **Tailwind CSS** para estilos
+- **Base UI** para componentes de interfaz
+- **vite-plugin-pwa** para funcionalidad PWA
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+## Instalación
 
-## Expanding the ESLint configuration
+```bash
+# Clonar el repositorio
+git clone https://github.com/BlIsteinar27/pwa-caida.git
+cd pwa-caida
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+# Instalar dependencias
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Desarrollo
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# Iniciar servidor de desarrollo
+npm run dev
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Compilar para producción
+npm run build
+
+# Previsualizar build de producción
+npm run preview
+```
+
+## Uso
+
+1. **Configurar partida**: Al iniciar la aplicación, selecciona el modo de juego y asigna nombres a los jugadores/equipos
+2. **Registrar puntos**: Usa los botones de puntuación rápida o el teclado numérico para valores personalizados
+3. **Gestionar partidas**:
+   - Reiniciar puntos de la partida actual
+   - Iniciar nueva serie (mantiene victorias)
+   - Nueva partida (reinicia todo)
+4. **Deshacer**: Revierte la última acción de puntuación
+
+## Estructura del proyecto
 
 ```
+src/
+├── components/          # Componentes React
+│   ├── ui/             # Componentes UI base
+│   ├── scoreBoard.tsx  # Tablero principal de puntuación
+│   ├── GameSetupModal.tsx
+│   ├── CustomPointsModal.tsx
+│   └── ConfirmDialog.tsx
+├── reducers/           # Reducers de estado
+│   └── gameReducer.ts  # Lógica del juego
+├── hooks/              # Hooks personalizados
+│   └── useLocalStorage.ts
+├── types/              # Definiciones TypeScript
+│   └── game.ts
+├── utils/              # Utilidades
+│   └── confirmations.ts
+└── App.tsx             # Componente principal
+```
+
+## Estado del juego
+
+El estado del juego incluye:
+
+- Modo de juego seleccionado
+- Nombres y puntuaciones de jugadores/equipos
+- Historial de acciones
+- Estado de finalización
+- Contador de victorias
+
+Los datos se persisten automáticamente en localStorage con la clave `caida-game-state`.
+
+## Despliegue
+
+Para desplegar la aplicación, compila el proyecto y sube los archivos de la carpeta `dist` a tu servidor de hosting estático.
+
+```bash
+npm run build
+```
+
+## Licencia
+
+Proyecto de código abierto.

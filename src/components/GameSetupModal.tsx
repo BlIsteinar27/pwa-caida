@@ -69,7 +69,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="bg-white/90 border border-purple-200 text-gray-800 max-w-md shadow-xl">
+      <DialogContent className="bg-white border border-purple-200 text-gray-800 max-w-md shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-gray-800 text-center">
             Configurar Partida
