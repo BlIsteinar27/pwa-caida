@@ -48,20 +48,20 @@ export function NameEditor({ names, onChange, mode }: Props) {
               <Input
                 value={tempName}
                 onChange={(e) => setTempName(e.target.value)}
-                className="flex-1 bg-zinc-800 border-zinc-700 text-white"
+                className="flex-1 bg-white/80 backdrop-blur-md border-purple-200 text-gray-800"
                 placeholder={getPlaceholder(index)}
                 autoFocus
               />
               <Button
                 onClick={handleSave}
-                className="bg-green-600 hover:bg-green-500 text-white"
+                className="bg-purple-600 hover:bg-purple-500 text-white backdrop-blur-sm"
                 size="sm"
               >
                 ✓
               </Button>
               <Button
                 onClick={handleCancel}
-                className="bg-zinc-700 hover:bg-zinc-600 text-white"
+                className="bg-gray-200 hover:bg-gray-300 text-gray-700 backdrop-blur-sm"
                 size="sm"
               >
                 ✗
@@ -69,12 +69,12 @@ export function NameEditor({ names, onChange, mode }: Props) {
             </>
           ) : (
             <>
-              <div className="flex-1 bg-zinc-800 border border-zinc-700 rounded px-2.5 py-1 text-zinc-200">
+              <div className="flex-1 bg-white/60 backdrop-blur-md border border-purple-200 rounded px-2.5 py-1 text-gray-700">
                 {name || getPlaceholder(index)}
               </div>
               <Button
                 onClick={() => handleEdit(index, name)}
-                className="bg-amber-600 hover:bg-amber-500 text-white"
+                className="bg-purple-500 hover:bg-purple-400 text-white backdrop-blur-sm"
                 size="sm"
               >
                 ✎

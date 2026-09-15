@@ -15,7 +15,7 @@ export function NumericKeypad({ onNumber, onClear, onBackspace }: Props) {
         <Button
           key={num}
           onClick={() => onNumber(num)}
-          className="bg-zinc-800 hover:bg-zinc-700 text-white text-2xl font-bold h-12 rounded-lg"
+          className="bg-white/80 backdrop-blur-md border border-purple-200 hover:bg-white/90 text-purple-700 text-2xl font-bold h-12 rounded-lg shadow-md transition-all"
           variant="secondary"
         >
           {num}
@@ -23,15 +23,15 @@ export function NumericKeypad({ onNumber, onClear, onBackspace }: Props) {
       ))}
       <Button
         onClick={onClear}
-        className="bg-red-600 hover:bg-red-500 text-white font-bold h-12 rounded-lg"
-        variant="destructive"
+        className="bg-red-100/80 backdrop-blur-md border border-red-300 hover:bg-red-200/80 text-red-600 font-bold h-12 rounded-lg shadow-md transition-all"
+        variant="outline"
       >
         C
       </Button>
       <Button
         onClick={onBackspace}
-        className="bg-zinc-700 hover:bg-zinc-600 text-white font-bold h-12 rounded-lg"
-        variant="secondary"
+        className="bg-purple-100/80 backdrop-blur-md border border-purple-200 hover:bg-purple-200/80 text-purple-600 font-bold h-12 rounded-lg shadow-md transition-all"
+        variant="outline"
       >
         ⌫
       </Button>

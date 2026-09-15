@@ -10,7 +10,7 @@ export function ModeSelector({ selectedMode, onSelect }: Props) {
     { value: "2p" as GameMode, label: "2 Jugadores", icon: "👤👤" },
     { value: "3p" as GameMode, label: "3 Jugadores", icon: "👤👤👤" },
     { value: "4p" as GameMode, label: "4 Jugadores", icon: "👤👤👤👤" },
-    { value: "teams" as GameMode, label: "Equipos (2v2)", icon: "🏆🏆" }
+    { value: "teams" as GameMode, label: "Equipos (2v2)", icon: "🏆🏆" },
   ];
 
   return (
@@ -19,14 +19,14 @@ export function ModeSelector({ selectedMode, onSelect }: Props) {
         <button
           key={mode.value}
           onClick={() => onSelect(mode.value)}
-          className={`p-4 rounded-lg border-2 transition-all ${
+          className={`p-4 rounded-lg border-2 transition-all backdrop-blur-md ${
             selectedMode === mode.value
-              ? "border-amber-500 bg-amber-500/10"
-              : "border-zinc-700 bg-zinc-800 hover:border-zinc-600"
+              ? "border-purple-400 bg-purple-100/80 shadow-md"
+              : "border-purple-200 bg-white/60 hover:bg-white/80 hover:border-purple-300"
           }`}
         >
           <div className="text-3xl mb-2">{mode.icon}</div>
-          <div className="text-sm font-medium text-zinc-200">{mode.label}</div>
+          <div className="text-sm font-medium text-gray-700">{mode.label}</div>
         </button>
       ))}
     </div>

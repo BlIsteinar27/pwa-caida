@@ -36,21 +36,21 @@ export function ScoreBoard({
           {state.teams.map((team) => (
             <Card
               key={team.id}
-              className="bg-zinc-900 border-zinc-800 flex flex-col justify-between"
+              className="bg-white/70 backdrop-blur-md border border-white/40 shadow-lg flex flex-col justify-between hover:bg-white/80 transition-all"
             >
               <CardHeader className="p-3 pb-0 text-center">
-                <CardTitle className="text-lg text-zinc-200 truncate">
+                <CardTitle className="text-lg text-gray-800 truncate font-semibold">
                   {team.name}
                 </CardTitle>
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-gray-500">
                   Ganadas: {team.wins}
                 </span>
               </CardHeader>
               <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
-                <span className="text-6xl font-black text-amber-500">
+                <span className="text-6xl font-black text-purple-600">
                   {team.score}
                 </span>
-                <span className="text-xs text-zinc-500 mt-1">/ 24 pts</span>
+                <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
               </CardContent>
             </Card>
           ))}
@@ -65,21 +65,21 @@ export function ScoreBoard({
         {state.players.map((player) => (
           <Card
             key={player.id}
-            className="bg-zinc-900 border-zinc-800 flex flex-col justify-between"
+            className="bg-white/70 backdrop-blur-md border border-white/40 shadow-lg flex flex-col justify-between hover:bg-white/80 transition-all"
           >
             <CardHeader className="p-3 pb-0 text-center">
-              <CardTitle className="text-lg text-zinc-200 truncate">
+              <CardTitle className="text-lg text-gray-800 truncate font-semibold">
                 {player.name}
               </CardTitle>
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-gray-500">
                 Ganadas: {player.wins}
               </span>
             </CardHeader>
             <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
-              <span className="text-6xl font-black text-amber-500">
+              <span className="text-6xl font-black text-purple-600">
                 {player.score}
               </span>
-              <span className="text-xs text-zinc-500 mt-1">/ 24 pts</span>
+              <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
             </CardContent>
           </Card>
         ))}
@@ -104,7 +104,7 @@ export function ScoreBoard({
       <div className="space-y-3">
         {participants.map((participant) => (
           <div key={participant.id} className="space-y-1">
-            <span className="text-xs font-semibold text-zinc-400">
+            <span className="text-xs font-semibold text-gray-600">
               Sumar a {participant.name}:
             </span>
             <div className="grid grid-cols-4 gap-1">
@@ -112,7 +112,7 @@ export function ScoreBoard({
                 <Button
                   key={canto.pts}
                   variant="secondary"
-                  className="h-12 text-lg font-bold bg-zinc-800 hover:bg-zinc-700 active:scale-95"
+                  className="h-12 text-lg font-bold bg-white/80 backdrop-blur-md border border-white/60 shadow-md hover:bg-white/90 hover:shadow-lg active:scale-95 transition-all text-purple-700"
                   onClick={() => onAddPoints(participant.id, canto.pts)}
                 >
                   {canto.label}
@@ -124,7 +124,7 @@ export function ScoreBoard({
                 <Button
                   key={canto.pts}
                   variant="outline"
-                  className="h-9 text-xs border-zinc-800 bg-zinc-900 hover:bg-zinc-800 active:scale-95"
+                  className="h-9 text-xs border-purple-200 bg-purple-50/80 backdrop-blur-md hover:bg-purple-100/80 active:scale-95 transition-all text-purple-600"
                   onClick={() => onAddPoints(participant.id, canto.pts)}
                 >
                   {canto.label}
@@ -132,7 +132,7 @@ export function ScoreBoard({
               ))}
               <Button
                 variant="outline"
-                className="h-9 text-xs border-amber-700 bg-amber-900/20 hover:bg-amber-900/30 text-amber-400 active:scale-95"
+                className="h-9 text-xs border-pink-300 bg-pink-50/80 backdrop-blur-md hover:bg-pink-100/80 active:scale-95 transition-all text-pink-600"
                 onClick={() => {
                   setSelectedPlayerId(participant.id);
                   setCustomPointsOpen(true);
@@ -161,9 +161,12 @@ export function ScoreBoard({
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-md mx-auto p-4 justify-between bg-zinc-950 text-white select-none">
+    <div className="flex flex-col h-screen max-w-md mx-auto p-4 justify-between bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 text-gray-800 select-none overflow-y-auto">
       <div className="flex justify-between items-center mb-2">
-        <Badge variant="outline" className="text-zinc-400 border-zinc-700">
+        <Badge
+          variant="outline"
+          className="text-purple-700 border-purple-300 bg-purple-100/50 backdrop-blur-sm"
+        >
           Modo: {state.mode.toUpperCase()}
         </Badge>
         <div className="space-x-2">
@@ -172,6 +175,7 @@ export function ScoreBoard({
             size="sm"
             onClick={onUndo}
             disabled={state.history.length === 0}
+            className="text-gray-700 hover:bg-white/60 backdrop-blur-sm"
           >
             Deshacer
           </Button>
@@ -179,11 +183,16 @@ export function ScoreBoard({
             variant="outline"
             size="sm"
             onClick={handleReset}
-            className="border-amber-700 text-amber-400 hover:bg-amber-900/20"
+            className="border-pink-300 text-pink-600 hover:bg-pink-100/50 backdrop-blur-sm"
           >
             Nueva Serie
           </Button>
-          <Button variant="destructive" size="sm" onClick={onReset}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onReset}
+            className="border-red-300 text-red-600 hover:bg-red-100/50 backdrop-blur-sm"
+          >
             Reiniciar
           </Button>
         </div>
@@ -192,12 +201,12 @@ export function ScoreBoard({
       {renderPlayers()}
 
       {state.isFinished ? (
-        <Card className="bg-amber-500/10 border-amber-500/50 p-4 text-center my-2">
-          <h2 className="text-xl font-bold text-amber-400">
+        <Card className="bg-purple-100/80 backdrop-blur-md border-purple-300 p-4 text-center my-2 shadow-lg">
+          <h2 className="text-xl font-bold text-purple-700">
             ¡Ganador: {state.winnerName}!
           </h2>
           <Button
-            className="w-full mt-3 bg-amber-600 hover:bg-amber-500 text-black font-bold"
+            className="w-full mt-3 bg-purple-600 hover:bg-purple-500 text-white font-bold backdrop-blur-sm"
             onClick={onNextMatch}
           >
             Iniciar Siguiente Partida

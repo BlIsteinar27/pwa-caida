@@ -69,15 +69,15 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="bg-zinc-900 border-zinc-700 text-white max-w-md">
+      <DialogContent className="bg-white/90 backdrop-blur-md border border-purple-200 text-gray-800 max-w-md shadow-xl">
         <DialogHeader>
-          <DialogTitle className="text-white text-center">
+          <DialogTitle className="text-gray-800 text-center">
             Configurar Partida
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
           <div>
-            <h3 className="text-sm font-semibold text-zinc-400 mb-3">
+            <h3 className="text-sm font-semibold text-gray-600 mb-3">
               Modo de Juego
             </h3>
             <ModeSelector
@@ -87,7 +87,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-zinc-400 mb-3">
+            <h3 className="text-sm font-semibold text-gray-600 mb-3">
               {selectedMode === "teams"
                 ? "Nombres de Equipos"
                 : "Nombres de Jugadores"}
@@ -99,7 +99,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
                   onChange={setTeamNames}
                   mode="teams"
                 />
-                <h3 className="text-sm font-semibold text-zinc-400 mb-3 mt-4">
+                <h3 className="text-sm font-semibold text-gray-600 mb-3 mt-4">
                   Jugadores por Equipo
                 </h3>
                 <NameEditor
@@ -118,7 +118,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
           </div>
 
           <Button
-            className="w-full bg-amber-600 hover:bg-amber-500 text-black font-bold"
+            className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold backdrop-blur-sm"
             onClick={handleStartGame}
           >
             Iniciar Partida

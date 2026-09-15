@@ -10,7 +10,12 @@ interface Props {
   playerName: string;
 }
 
-export function CustomPointsModal({ isOpen, onClose, onConfirm, playerName }: Props) {
+export function CustomPointsModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  playerName,
+}: Props) {
   const [currentValue, setCurrentValue] = useState("");
 
   const handleNumber = (num: number) => {
@@ -40,14 +45,14 @@ export function CustomPointsModal({ isOpen, onClose, onConfirm, playerName }: Pr
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-zinc-900 border-zinc-700 text-white max-w-sm">
+      <DialogContent className="bg-white/90 backdrop-blur-md border border-purple-200 text-gray-800 max-w-sm shadow-xl">
         <DialogHeader>
-          <DialogTitle className="text-white text-center text-xl">
+          <DialogTitle className="text-gray-800 text-center text-xl">
             Agregar puntos a {playerName}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="text-4xl font-black text-amber-500 text-center py-4">
+          <div className="text-4xl font-black text-purple-600 text-center py-4">
             {displayValue}
           </div>
           <NumericKeypad
@@ -57,16 +62,20 @@ export function CustomPointsModal({ isOpen, onClose, onConfirm, playerName }: Pr
           />
           <div className="flex gap-2">
             <Button
-              variant="destructive"
-              className="flex-1"
+              variant="outline"
+              className="flex-1 border-red-300 text-red-600 hover:bg-red-100/50 backdrop-blur-sm"
               onClick={onClose}
             >
               Cancelar
             </Button>
             <Button
-              className="flex-1 bg-green-600 hover:bg-green-500 text-white"
+              className="flex-1 bg-purple-600 hover:bg-purple-500 text-white backdrop-blur-sm"
               onClick={handleConfirm}
-              disabled={!currentValue || parseInt(currentValue) <= 0 || parseInt(currentValue) > 24}
+              disabled={
+                !currentValue ||
+                parseInt(currentValue) <= 0 ||
+                parseInt(currentValue) > 24
+              }
             >
               Agregar
             </Button>
