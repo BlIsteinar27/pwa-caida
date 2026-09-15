@@ -28,15 +28,6 @@ export function ScoreBoard({
 }: Props) {
   const [customPointsOpen, setCustomPointsOpen] = useState(false);
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
-  const cantos = [
-    { label: "+1", pts: 1 },
-    { label: "+2", pts: 2 },
-    { label: "+3", pts: 3 },
-    { label: "+4", pts: 4 },
-    { label: "Patrulla (+6)", pts: 6 },
-    { label: "Vigía (+7)", pts: 7 },
-    { label: "Registro (+12)", pts: 12 },
-  ];
 
   const renderPlayers = () => {
     if (state.mode === "teams") {
