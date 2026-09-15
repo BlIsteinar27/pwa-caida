@@ -4,7 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GameSetupModal } from "./GameSetupModal";
 import { CustomPointsModal } from "./CustomPointsModal";
-import { confirmResetSeries } from "../utils/confirmations";
+import {
+  confirmResetSeries,
+  confirmResetAll,
+  confirmResetPoints,
+} from "../utils/confirmations";
 import { useState } from "react";
 
 interface Props {
@@ -12,8 +16,9 @@ interface Props {
   onAddPoints: (playerId: number, points: number) => void;
   onUndo: () => void;
   onNextMatch: () => void;
-  onReset: () => void;
-  onShowSetup: () => void;
+  onResetPoints: () => void;
+  onResetSeries: () => void;
+  onResetAll: () => void;
   onInitGame: (mode: any, names: string[], teamNames?: string[]) => void;
 }
 
@@ -22,8 +27,9 @@ export function ScoreBoard({
   onAddPoints,
   onUndo,
   onNextMatch,
-  onReset,
-  onShowSetup,
+  onResetPoints,
+  onResetSeries,
+  onResetAll,
   onInitGame,
 }: Props) {
   const [customPointsOpen, setCustomPointsOpen] = useState(false);
@@ -147,10 +153,24 @@ export function ScoreBoard({
     );
   };
 
-  const handleReset = async () => {
+  const handleResetPoints = async () => {
+    const confirmed = await confirmResetPoints();
+    if (confirmed) {
+      onResetPoints();
+    }
+  };
+
+  const handleResetSeries = async () => {
     const confirmed = await confirmResetSeries();
     if (confirmed) {
-      onShowSetup();
+      onResetSeries();
+    }
+  };
+
+  const handleResetAll = async () => {
+    const confirmed = await confirmResetAll();
+    if (confirmed) {
+      onResetAll();
     }
   };
 
@@ -171,18 +191,17 @@ export function ScoreBoard({
         </Badge>
         <div className="space-x-2">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            onClick={onUndo}
-            disabled={state.history.length === 0}
-            className="text-gray-700 hover:bg-white/60 backdrop-blur-sm"
+            onClick={handleResetPoints}
+            className="border-purple-300 text-purple-600 hover:bg-purple-100/50 backdrop-blur-sm"
           >
-            Deshacer
+            Reiniciar Puntos
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={handleReset}
+            onClick={handleResetSeries}
             className="border-pink-300 text-pink-600 hover:bg-pink-100/50 backdrop-blur-sm"
           >
             Nueva Serie
@@ -190,10 +209,19 @@ export function ScoreBoard({
           <Button
             variant="outline"
             size="sm"
-            onClick={onReset}
+            onClick={handleResetAll}
             className="border-red-300 text-red-600 hover:bg-red-100/50 backdrop-blur-sm"
           >
-            Reiniciar
+            Nueva Partida
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onUndo}
+            disabled={state.history.length === 0}
+            className="text-gray-700 hover:bg-white/60 backdrop-blur-sm"
+          >
+            Deshacer
           </Button>
         </div>
       </div>
@@ -205,12 +233,20 @@ export function ScoreBoard({
           <h2 className="text-xl font-bold text-purple-700">
             ¡Ganador: {state.winnerName}!
           </h2>
-          <Button
-            className="w-full mt-3 bg-purple-600 hover:bg-purple-500 text-white font-bold backdrop-blur-sm"
-            onClick={onNextMatch}
-          >
-            Iniciar Siguiente Partida
-          </Button>
+          <div className="flex gap-2 mt-3">
+            <Button
+              className="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold backdrop-blur-sm"
+              onClick={onNextMatch}
+            >
+              Siguiente Partida
+            </Button>
+            <Button
+              className="flex-1 border-purple-300 text-purple-600 hover:bg-purple-100/50 backdrop-blur-sm"
+              onClick={handleResetPoints}
+            >
+              Reiniciar Puntos
+            </Button>
+          </div>
         </Card>
       ) : (
         renderPointButtons()

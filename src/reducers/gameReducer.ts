@@ -8,6 +8,8 @@ export type GameAction =
   | { type: "ADD_POINTS"; payload: { playerId: number; points: number } }
   | { type: "UNDO" }
   | { type: "NEXT_MATCH" }
+  | { type: "RESET_POINTS" }
+  | { type: "RESET_SERIES" }
   | { type: "RESET_ALL" }
   | { type: "SHOW_SETUP" };
 
@@ -212,6 +214,55 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         players: state.players.map((p) => ({ ...p, score: 0 })),
+        history: [],
+        isFinished: false,
+        winnerName: null,
+      };
+    }
+
+    case "RESET_POINTS": {
+      if (state.mode === "teams") {
+        return {
+          ...state,
+          teams: state.teams.map((team) => ({
+            ...team,
+            score: 0,
+            players: team.players.map((player) => ({ ...player, score: 0 })),
+          })),
+          history: [],
+          isFinished: false,
+          winnerName: null,
+        };
+      }
+
+      return {
+        ...state,
+        players: state.players.map((p) => ({ ...p, score: 0 })),
+        history: [],
+        isFinished: false,
+        winnerName: null,
+      };
+    }
+
+    case "RESET_SERIES": {
+      if (state.mode === "teams") {
+        return {
+          ...state,
+          teams: state.teams.map((team) => ({
+            ...team,
+            score: 0,
+            wins: 0,
+            players: team.players.map((player) => ({ ...player, score: 0 })),
+          })),
+          history: [],
+          isFinished: false,
+          winnerName: null,
+        };
+      }
+
+      return {
+        ...state,
+        players: state.players.map((p) => ({ ...p, score: 0, wins: 0 })),
         history: [],
         isFinished: false,
         winnerName: null,

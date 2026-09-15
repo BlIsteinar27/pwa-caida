@@ -9,13 +9,15 @@ export const confirmResetSeries = async (): Promise<boolean> => {
     confirmButtonText: "Sí, reiniciar",
     cancelButtonText: "Cancelar",
     customClass: {
-      popup: "bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl",
-      title: "text-white font-bold text-lg",
-      htmlContainer: "text-zinc-300",
+      popup:
+        "bg-white/90 backdrop-blur-md border border-purple-200 rounded-lg shadow-xl",
+      title: "text-gray-800 font-bold text-lg",
+      htmlContainer: "text-gray-600",
       confirmButton:
-        "bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded",
+        "bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded",
       cancelButton:
-        "bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded",
+        "bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded",
+      actions: "gap-2 flex flex-row-reverse",
     },
     buttonsStyling: false,
   });
@@ -31,13 +33,39 @@ export const confirmResetAll = async (): Promise<boolean> => {
     confirmButtonText: "Sí, reiniciar",
     cancelButtonText: "Cancelar",
     customClass: {
-      popup: "bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl",
-      title: "text-white font-bold text-lg",
-      htmlContainer: "text-zinc-300",
+      popup:
+        "bg-white/90 backdrop-blur-md border border-purple-200 rounded-lg shadow-xl",
+      title: "text-gray-800 font-bold text-lg",
+      htmlContainer: "text-gray-600",
       confirmButton:
-        "bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded",
+        "bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded",
       cancelButton:
-        "bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded",
+        "bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded",
+      actions: "gap-2 flex flex-row-reverse",
+    },
+    buttonsStyling: false,
+  });
+  return result.isConfirmed;
+};
+
+export const confirmResetPoints = async (): Promise<boolean> => {
+  const result = await Swal.fire({
+    title: "¿Reiniciar puntos?",
+    text: "Se reiniciarán los puntos de la partida actual",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí, reiniciar",
+    cancelButtonText: "Cancelar",
+    customClass: {
+      popup:
+        "bg-white/90 backdrop-blur-md border border-purple-200 rounded-lg shadow-xl",
+      title: "text-gray-800 font-bold text-lg",
+      htmlContainer: "text-gray-600",
+      confirmButton:
+        "bg-purple-500 hover:bg-purple-400 text-white font-bold py-2 px-4 rounded",
+      cancelButton:
+        "bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded",
+      actions: "gap-2 flex flex-row-reverse",
     },
     buttonsStyling: false,
   });

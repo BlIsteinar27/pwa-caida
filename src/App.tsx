@@ -44,8 +44,9 @@ export default function App() {
       }
       onUndo={() => dispatch({ type: "UNDO" })}
       onNextMatch={() => dispatch({ type: "NEXT_MATCH" })}
-      onReset={() => dispatch({ type: "RESET_ALL" })}
-      onShowSetup={() => dispatch({ type: "SHOW_SETUP" })}
+      onResetPoints={() => dispatch({ type: "RESET_POINTS" })}
+      onResetSeries={() => dispatch({ type: "RESET_SERIES" })}
+      onResetAll={() => dispatch({ type: "RESET_ALL" })}
       onInitGame={handleInitGame}
     />
   );
