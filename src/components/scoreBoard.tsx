@@ -7,6 +7,66 @@ import { ConfirmDialog } from "./ConfirmDialog";
 import { useConfirmations } from "../utils/confirmations";
 import { useState, useCallback, memo, useMemo } from "react";
 
+// Colores para jugadores y equipos
+type PlayerColor = "blue" | "red" | "green" | "yellow";
+
+const getPlayerColor = (id: number, mode: GameState["mode"]): PlayerColor => {
+  if (mode === "teams") {
+    return id === 0 ? "blue" : "red";
+  }
+  // Modo individual
+  const colors: PlayerColor[] = ["blue", "red", "green", "yellow"];
+  return colors[id] || "blue";
+};
+
+const colorClasses: Record<
+  PlayerColor,
+  {
+    card: string;
+    buttonRow: string;
+    accent: string;
+    secondaryButton: string;
+    tertiaryButton: string;
+  }
+> = {
+  blue: {
+    card: "bg-blue-50/70 border-blue-200 hover:bg-blue-100/80",
+    buttonRow: "bg-blue-100/30 border-blue-200",
+    accent: "text-blue-600",
+    secondaryButton:
+      "bg-blue-50/80 border-blue-200 hover:bg-blue-100/80 text-blue-700",
+    tertiaryButton:
+      "border-blue-200 bg-blue-50/80 hover:bg-blue-100/80 text-blue-600",
+  },
+  red: {
+    card: "bg-red-50/70 border-red-200 hover:bg-red-100/80",
+    buttonRow: "bg-red-100/30 border-red-200",
+    accent: "text-red-600",
+    secondaryButton:
+      "bg-red-50/80 border-red-200 hover:bg-red-100/80 text-red-700",
+    tertiaryButton:
+      "border-red-200 bg-red-50/80 hover:bg-red-100/80 text-red-600",
+  },
+  green: {
+    card: "bg-green-50/70 border-green-200 hover:bg-green-100/80",
+    buttonRow: "bg-green-100/30 border-green-200",
+    accent: "text-green-600",
+    secondaryButton:
+      "bg-green-50/80 border-green-200 hover:bg-green-100/80 text-green-700",
+    tertiaryButton:
+      "border-green-200 bg-green-50/80 hover:bg-green-100/80 text-green-600",
+  },
+  yellow: {
+    card: "bg-yellow-50/70 border-yellow-200 hover:bg-yellow-100/80",
+    buttonRow: "bg-yellow-100/30 border-yellow-200",
+    accent: "text-yellow-600",
+    secondaryButton:
+      "bg-yellow-50/80 border-yellow-200 hover:bg-yellow-100/80 text-yellow-700",
+    tertiaryButton:
+      "border-yellow-200 bg-yellow-50/80 hover:bg-yellow-100/80 text-yellow-600",
+  },
+};
+
 interface Props {
   state: GameState;
   onAddPoints: (playerId: number, points: number) => void;
@@ -50,34 +110,38 @@ export const ScoreBoard = memo(function ScoreBoard({
     if (state.mode === "teams") {
       return (
         <div className="grid grid-cols-2 gap-4 flex-1 my-2">
-          {state.teams.map((team) => (
-            <Card
-              key={team.id}
-              className="bg-white/70 border border-white/40 shadow-lg flex flex-col justify-between hover:bg-white/80 transition-colors"
-            >
-              <CardHeader className="p-3 pb-0 text-center">
-                <CardTitle className="text-lg text-gray-800 truncate font-semibold">
-                  {team.name}
-                </CardTitle>
-                <span className="text-xs text-gray-500">
-                  Ganadas: {team.wins}
-                </span>
-              </CardHeader>
-              <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
-                <div className="text-xs text-gray-600 mb-2 space-y-1">
-                  {team.players.map((player) => (
-                    <div key={player.id} className="text-gray-500">
-                      {player.name}
-                    </div>
-                  ))}
-                </div>
-                <span className="text-6xl font-black text-purple-600">
-                  {team.score}
-                </span>
-                <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
-              </CardContent>
-            </Card>
-          ))}
+          {state.teams.map((team) => {
+            const color = getPlayerColor(team.id, state.mode);
+            const colorClass = colorClasses[color];
+            return (
+              <Card
+                key={team.id}
+                className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors`}
+              >
+                <CardHeader className="p-3 pb-0 text-center">
+                  <CardTitle className="text-lg text-gray-800 truncate font-semibold">
+                    {team.name}
+                  </CardTitle>
+                  <span className="text-xs text-gray-500">
+                    Ganadas: {team.wins}
+                  </span>
+                </CardHeader>
+                <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
+                  <div className="text-xs text-gray-600 mb-2 space-y-1">
+                    {team.players.map((player) => (
+                      <div key={player.id} className="text-gray-500">
+                        {player.name}
+                      </div>
+                    ))}
+                  </div>
+                  <span className={`text-6xl font-black ${colorClass.accent}`}>
+                    {team.score}
+                  </span>
+                  <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       );
     }
@@ -86,27 +150,31 @@ export const ScoreBoard = memo(function ScoreBoard({
       <div
         className={`grid gap-4 flex-1 my-2 ${state.players.length === 2 ? "grid-cols-2" : "grid-cols-2 grid-rows-2"}`}
       >
-        {state.players.map((player) => (
-          <Card
-            key={player.id}
-            className="bg-white/70 border border-white/40 shadow-lg flex flex-col justify-between hover:bg-white/80 transition-colors"
-          >
-            <CardHeader className="p-3 pb-0 text-center">
-              <CardTitle className="text-lg text-gray-800 truncate font-semibold">
-                {player.name}
-              </CardTitle>
-              <span className="text-xs text-gray-500">
-                Ganadas: {player.wins}
-              </span>
-            </CardHeader>
-            <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
-              <span className="text-6xl font-black text-purple-600">
-                {player.score}
-              </span>
-              <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
-            </CardContent>
-          </Card>
-        ))}
+        {state.players.map((player) => {
+          const color = getPlayerColor(player.id, state.mode);
+          const colorClass = colorClasses[color];
+          return (
+            <Card
+              key={player.id}
+              className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors`}
+            >
+              <CardHeader className="p-3 pb-0 text-center">
+                <CardTitle className="text-lg text-gray-800 truncate font-semibold">
+                  {player.name}
+                </CardTitle>
+                <span className="text-xs text-gray-500">
+                  Ganadas: {player.wins}
+                </span>
+              </CardHeader>
+              <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
+                <span className={`text-6xl font-black ${colorClass.accent}`}>
+                  {player.score}
+                </span>
+                <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     );
   }, [state.mode, state.teams, state.players]);
@@ -126,47 +194,55 @@ export const ScoreBoard = memo(function ScoreBoard({
 
     return (
       <div className="space-y-3">
-        {participants.map((participant) => (
-          <div key={participant.id} className="space-y-1">
-            <span className="text-xs font-semibold text-gray-600">
-              Sumar a {participant.name}:
-            </span>
-            <div className="grid grid-cols-4 gap-1">
-              {cantos.slice(0, 4).map((canto) => (
-                <Button
-                  key={canto.pts}
-                  variant="secondary"
-                  className="h-12 text-lg font-bold bg-white/80 border border-white/60 shadow-md hover:bg-white/90 hover:shadow-lg transition-colors text-purple-700"
-                  onClick={() => onAddPoints(participant.id, canto.pts)}
-                >
-                  {canto.label}
-                </Button>
-              ))}
-            </div>
-            <div className="grid grid-cols-4 gap-1 pt-1">
-              {cantos.slice(4).map((canto) => (
-                <Button
-                  key={canto.pts}
-                  variant="outline"
-                  className="h-9 text-xs border-purple-200 bg-purple-50/80 hover:bg-purple-100/80 transition-colors text-purple-600"
-                  onClick={() => onAddPoints(participant.id, canto.pts)}
-                >
-                  {canto.label}
-                </Button>
-              ))}
-              <Button
-                variant="outline"
-                className="h-9 text-xs border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 transition-colors text-pink-600"
-                onClick={() => {
-                  setSelectedPlayerId(participant.id);
-                  setCustomPointsOpen(true);
-                }}
+        {participants.map((participant) => {
+          const color = getPlayerColor(participant.id, state.mode);
+          const colorClass = colorClasses[color];
+          return (
+            <div key={participant.id} className="space-y-1">
+              <span className="text-xs font-semibold text-gray-600">
+                Sumar a {participant.name}:
+              </span>
+              <div
+                className={`grid grid-cols-4 gap-1 p-2 rounded border ${colorClass.buttonRow}`}
               >
-                Custom
-              </Button>
+                {cantos.slice(0, 4).map((canto) => (
+                  <Button
+                    key={canto.pts}
+                    variant="secondary"
+                    className={`h-12 text-lg font-bold shadow-md hover:shadow-lg transition-colors ${colorClass.secondaryButton}`}
+                    onClick={() => onAddPoints(participant.id, canto.pts)}
+                  >
+                    {canto.label}
+                  </Button>
+                ))}
+              </div>
+              <div
+                className={`grid grid-cols-4 gap-1 pt-1 p-2 rounded border ${colorClass.buttonRow}`}
+              >
+                {cantos.slice(4).map((canto) => (
+                  <Button
+                    key={canto.pts}
+                    variant="outline"
+                    className={`h-9 text-xs transition-colors ${colorClass.tertiaryButton}`}
+                    onClick={() => onAddPoints(participant.id, canto.pts)}
+                  >
+                    {canto.label}
+                  </Button>
+                ))}
+                <Button
+                  variant="outline"
+                  className="h-9 text-xs border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 transition-colors text-pink-600"
+                  onClick={() => {
+                    setSelectedPlayerId(participant.id);
+                    setCustomPointsOpen(true);
+                  }}
+                >
+                  Custom
+                </Button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }, [state.mode, state.teams, state.players, onAddPoints]);
