@@ -109,7 +109,7 @@ export const ScoreBoard = memo(function ScoreBoard({
   const renderPlayers = useCallback(() => {
     if (state.mode === "teams") {
       return (
-        <div className="grid grid-cols-2 gap-4 flex-1 my-2">
+        <div className="grid grid-cols-2 gap-4 md:gap-6 lg:gap-8 flex-1 my-2">
           {state.teams.map((team) => {
             const color = getPlayerColor(team.id, state.mode);
             const colorClass = colorClasses[color];
@@ -118,15 +118,15 @@ export const ScoreBoard = memo(function ScoreBoard({
                 key={team.id}
                 className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors`}
               >
-                <CardHeader className="p-3 pb-0 text-center">
-                  <CardTitle className="text-lg text-gray-800 truncate font-semibold">
+                <CardHeader className="p-3 md:p-4 lg:p-5 pb-0 text-center">
+                  <CardTitle className="text-lg md:text-xl lg:text-2xl text-gray-800 truncate font-semibold">
                     {team.name}
                   </CardTitle>
                   <span className="text-xs text-gray-500">
                     Ganadas: {team.wins}
                   </span>
                 </CardHeader>
-                <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
+                <CardContent className="p-3 md:p-4 lg:p-5 text-center flex-1 flex flex-col justify-center items-center">
                   <div className="text-xs text-gray-600 mb-2 space-y-1">
                     {team.players.map((player) => (
                       <div key={player.id} className="text-gray-500">
@@ -134,7 +134,9 @@ export const ScoreBoard = memo(function ScoreBoard({
                       </div>
                     ))}
                   </div>
-                  <span className={`text-6xl font-black ${colorClass.accent}`}>
+                  <span
+                    className={`text-6xl md:text-7xl lg:text-8xl font-black ${colorClass.accent}`}
+                  >
                     {team.score}
                   </span>
                   <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
@@ -148,7 +150,7 @@ export const ScoreBoard = memo(function ScoreBoard({
 
     return (
       <div
-        className={`grid gap-4 flex-1 my-2 ${state.players.length === 2 ? "grid-cols-2" : "grid-cols-2 grid-rows-2"}`}
+        className={`grid gap-4 md:gap-6 lg:gap-8 flex-1 my-2 ${state.players.length === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-2 lg:grid-cols-4"}`}
       >
         {state.players.map((player) => {
           const color = getPlayerColor(player.id, state.mode);
@@ -158,16 +160,18 @@ export const ScoreBoard = memo(function ScoreBoard({
               key={player.id}
               className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors`}
             >
-              <CardHeader className="p-3 pb-0 text-center">
-                <CardTitle className="text-lg text-gray-800 truncate font-semibold">
+              <CardHeader className="p-3 md:p-4 lg:p-5 pb-0 text-center">
+                <CardTitle className="text-lg md:text-xl lg:text-2xl text-gray-800 truncate font-semibold">
                   {player.name}
                 </CardTitle>
                 <span className="text-xs text-gray-500">
                   Ganadas: {player.wins}
                 </span>
               </CardHeader>
-              <CardContent className="p-3 text-center flex-1 flex flex-col justify-center items-center">
-                <span className={`text-6xl font-black ${colorClass.accent}`}>
+              <CardContent className="p-3 md:p-4 lg:p-5 text-center flex-1 flex flex-col justify-center items-center">
+                <span
+                  className={`text-6xl md:text-7xl lg:text-8xl font-black ${colorClass.accent}`}
+                >
                   {player.score}
                 </span>
                 <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
@@ -203,13 +207,13 @@ export const ScoreBoard = memo(function ScoreBoard({
                 Sumar a {participant.name}:
               </span>
               <div
-                className={`grid grid-cols-4 gap-1 p-2 rounded border ${colorClass.buttonRow}`}
+                className={`grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-1 md:gap-2 p-2 md:p-3 rounded border ${colorClass.buttonRow}`}
               >
                 {cantos.slice(0, 4).map((canto) => (
                   <Button
                     key={canto.pts}
                     variant="secondary"
-                    className={`h-12 text-lg font-bold shadow-md hover:shadow-lg transition-colors ${colorClass.secondaryButton}`}
+                    className={`h-12 md:h-14 lg:h-16 text-lg md:text-xl lg:text-2xl font-bold shadow-md hover:shadow-lg transition-colors ${colorClass.secondaryButton}`}
                     onClick={() => onAddPoints(participant.id, canto.pts)}
                   >
                     {canto.label}
@@ -217,13 +221,13 @@ export const ScoreBoard = memo(function ScoreBoard({
                 ))}
               </div>
               <div
-                className={`grid grid-cols-4 gap-1 pt-1 p-2 rounded border ${colorClass.buttonRow}`}
+                className={`grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-1 md:gap-2 pt-1 p-2 md:p-3 rounded border ${colorClass.buttonRow}`}
               >
                 {cantos.slice(4).map((canto) => (
                   <Button
                     key={canto.pts}
                     variant="outline"
-                    className={`h-9 text-xs transition-colors ${colorClass.tertiaryButton}`}
+                    className={`h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base transition-colors ${colorClass.tertiaryButton}`}
                     onClick={() => onAddPoints(participant.id, canto.pts)}
                   >
                     {canto.label}
@@ -231,7 +235,7 @@ export const ScoreBoard = memo(function ScoreBoard({
                 ))}
                 <Button
                   variant="outline"
-                  className="h-9 text-xs border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 transition-colors text-pink-600"
+                  className="h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 transition-colors text-pink-600"
                   onClick={() => {
                     setSelectedPlayerId(participant.id);
                     setCustomPointsOpen(true);
@@ -278,8 +282,8 @@ export const ScoreBoard = memo(function ScoreBoard({
   );
 
   return (
-    <div className="flex flex-col h-screen max-w-md mx-auto p-4 justify-between bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 text-gray-800 select-none overflow-y-auto">
-      <div className="grid grid-cols-2 gap-2 mb-2">
+    <div className="flex flex-col h-screen max-w-md md:max-w-2xl lg:max-w-4xl mx-auto p-4 md:p-6 lg:p-8 justify-between bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 text-gray-800 select-none overflow-y-auto">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-2 md:mb-4">
         <Button
           variant="outline"
           size="sm"
@@ -318,8 +322,8 @@ export const ScoreBoard = memo(function ScoreBoard({
       {renderPlayers()}
 
       {state.isFinished ? (
-        <Card className="bg-purple-100/80 border-purple-300 p-4 text-center my-2 shadow-lg">
-          <h2 className="text-xl font-bold text-purple-700">
+        <Card className="bg-purple-100/80 border-purple-300 p-4 md:p-6 lg:p-8 text-center my-2 md:my-4 shadow-lg">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-purple-700">
             ¡Ganador: {state.winnerName}!
           </h2>
           <div className="flex gap-2 mt-3">
@@ -330,7 +334,7 @@ export const ScoreBoard = memo(function ScoreBoard({
               Siguiente Partida
             </Button>
             <Button
-              className="flex-1 border-purple-300 text-purple-600 hover:bg-purple-100/50"
+              className="flex-1 border-purple-300 text-white  hover:bg-purple-100/50"
               onClick={handleResetPoints}
             >
               Reiniciar Puntos

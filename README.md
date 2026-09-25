@@ -10,7 +10,8 @@ Aplicación web progresiva (PWA) para llevar el puntaje del juego de cartas "Cai
 - **Persistencia de datos**: El estado del juego se guarda automáticamente en localStorage
 - **Historial de acciones**: Función deshacer para revertir movimientos
 - **Gestión de series**: Control de victorias y partidas
-- **Interfaz responsive**: Diseño optimizado para móviles y tablets
+- **Interfaz responsive**: Diseño optimizado para móviles, tablets y escritorio con adaptación automática
+- **Soporte tablet**: Layout optimizado 2-columnas con touch targets mejorados para tablets
 - **Modo equipos**: Muestra nombres de jugadores por equipo
 - **Diálogos de confirmación**: Prevención de acciones destructivas
 - **Optimización de rendimiento**: Componentes memoizados y cálculos optimizados para una experiencia fluida
