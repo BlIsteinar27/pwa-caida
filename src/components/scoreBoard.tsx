@@ -207,8 +207,14 @@ export const ScoreBoard = memo(function ScoreBoard({
       { label: "Registro", pts: 12 },
     ];
 
-    let colorClass;
-    let participantName;
+    let colorClass: {
+      card: string;
+      buttonRow: string;
+      accent: string;
+      secondaryButton: string;
+      tertiaryButton: string;
+    } = colorClasses.blue;
+    let participantName = "";
 
     if (selectedParticipantId !== null) {
       const color = getPlayerColor(selectedParticipantId, state.mode);
