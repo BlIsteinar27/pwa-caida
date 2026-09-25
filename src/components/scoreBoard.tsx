@@ -90,6 +90,9 @@ export const ScoreBoard = memo(function ScoreBoard({
 }: Props) {
   const [customPointsOpen, setCustomPointsOpen] = useState(false);
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
+  const [selectedParticipantId, setSelectedParticipantId] = useState<
+    number | null
+  >(null);
   const {
     confirmation,
     confirmResetPoints,
@@ -116,7 +119,12 @@ export const ScoreBoard = memo(function ScoreBoard({
             return (
               <Card
                 key={team.id}
-                className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors`}
+                className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors cursor-pointer`}
+                onClick={() =>
+                  setSelectedParticipantId((prev) =>
+                    prev === team.id ? null : team.id,
+                  )
+                }
               >
                 <CardHeader className="p-3 md:p-4 lg:p-5 pb-0 text-center">
                   <CardTitle className="text-lg md:text-xl lg:text-2xl text-gray-800 truncate font-semibold">
@@ -158,7 +166,12 @@ export const ScoreBoard = memo(function ScoreBoard({
           return (
             <Card
               key={player.id}
-              className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors`}
+              className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors cursor-pointer`}
+              onClick={() =>
+                setSelectedParticipantId((prev) =>
+                  prev === player.id ? null : player.id,
+                )
+              }
             >
               <CardHeader className="p-3 md:p-4 lg:p-5 pb-0 text-center">
                 <CardTitle className="text-lg md:text-xl lg:text-2xl text-gray-800 truncate font-semibold">
@@ -194,62 +207,95 @@ export const ScoreBoard = memo(function ScoreBoard({
       { label: "Registro", pts: 12 },
     ];
 
-    const participants = state.mode === "teams" ? state.teams : state.players;
+    let colorClass;
+    let participantName;
+
+    if (selectedParticipantId !== null) {
+      const color = getPlayerColor(selectedParticipantId, state.mode);
+      colorClass = colorClasses[color];
+      participantName =
+        state.mode === "teams"
+          ? state.teams.find((t) => t.id === selectedParticipantId)?.name || ""
+          : state.players.find((p) => p.id === selectedParticipantId)?.name ||
+            "";
+    }
 
     return (
       <div className="space-y-3">
-        {participants.map((participant) => {
-          const color = getPlayerColor(participant.id, state.mode);
-          const colorClass = colorClasses[color];
-          return (
-            <div key={participant.id} className="space-y-1">
-              <span className="text-xs font-semibold text-gray-600">
-                Sumar a {participant.name}:
-              </span>
-              <div
-                className={`grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-1 md:gap-2 p-2 md:p-3 rounded border ${colorClass.buttonRow}`}
-              >
-                {cantos.slice(0, 4).map((canto) => (
-                  <Button
-                    key={canto.pts}
-                    variant="secondary"
-                    className={`h-12 md:h-14 lg:h-16 text-lg md:text-xl lg:text-2xl font-bold shadow-md hover:shadow-lg transition-colors ${colorClass.secondaryButton}`}
-                    onClick={() => onAddPoints(participant.id, canto.pts)}
-                  >
-                    {canto.label}
-                  </Button>
-                ))}
-              </div>
-              <div
-                className={`grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-1 md:gap-2 pt-1 p-2 md:p-3 rounded border ${colorClass.buttonRow}`}
-              >
-                {cantos.slice(4).map((canto) => (
-                  <Button
-                    key={canto.pts}
-                    variant="outline"
-                    className={`h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base transition-colors ${colorClass.tertiaryButton}`}
-                    onClick={() => onAddPoints(participant.id, canto.pts)}
-                  >
-                    {canto.label}
-                  </Button>
-                ))}
-                <Button
-                  variant="outline"
-                  className="h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 transition-colors text-pink-600"
-                  onClick={() => {
-                    setSelectedPlayerId(participant.id);
-                    setCustomPointsOpen(true);
-                  }}
-                >
-                  Custom
-                </Button>
-              </div>
-            </div>
-          );
-        })}
+        {selectedParticipantId !== null ? (
+          <span className="text-xs font-semibold text-gray-600">
+            Sumar a {participantName}:
+          </span>
+        ) : (
+          <span className="text-xs font-semibold text-gray-400">
+            Toca una tarjeta para agregar puntos
+          </span>
+        )}
+        <div
+          className={`grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-1 md:gap-2 p-2 md:p-3 rounded border ${selectedParticipantId !== null ? colorClass.buttonRow : "bg-gray-100/30 border-gray-200"}`}
+        >
+          {cantos.slice(0, 4).map((canto) => (
+            <Button
+              key={canto.pts}
+              variant="secondary"
+              className={`h-12 md:h-14 lg:h-16 text-lg md:text-xl lg:text-2xl font-bold shadow-md hover:shadow-lg transition-colors ${selectedParticipantId !== null ? colorClass.secondaryButton : "bg-gray-50/80 border-gray-200 text-gray-400 cursor-not-allowed"}`}
+              onClick={() => {
+                if (selectedParticipantId !== null) {
+                  onAddPoints(selectedParticipantId, canto.pts);
+                  setSelectedParticipantId(null);
+                }
+              }}
+              disabled={selectedParticipantId === null}
+            >
+              {canto.label}
+            </Button>
+          ))}
+        </div>
+        <div
+          className={`grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-1 md:gap-2 pt-1 p-2 md:p-3 rounded border ${selectedParticipantId !== null ? colorClass.buttonRow : "bg-gray-100/30 border-gray-200"}`}
+        >
+          {cantos.slice(4).map((canto) => (
+            <Button
+              key={canto.pts}
+              variant="outline"
+              className={`h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base transition-colors ${selectedParticipantId !== null ? colorClass.tertiaryButton : "bg-gray-50/80 border-gray-200 text-gray-400 cursor-not-allowed"}`}
+              onClick={() => {
+                if (selectedParticipantId !== null) {
+                  onAddPoints(selectedParticipantId, canto.pts);
+                  setSelectedParticipantId(null);
+                }
+              }}
+              disabled={selectedParticipantId === null}
+            >
+              {canto.label}
+            </Button>
+          ))}
+          <Button
+            variant="outline"
+            className={`h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 transition-colors text-pink-600 ${selectedParticipantId === null ? "opacity-50 cursor-not-allowed" : ""}`}
+            onClick={() => {
+              if (selectedParticipantId !== null) {
+                setSelectedPlayerId(selectedParticipantId);
+                setCustomPointsOpen(true);
+                setSelectedParticipantId(null);
+              }
+            }}
+            disabled={selectedParticipantId === null}
+          >
+            Custom
+          </Button>
+        </div>
       </div>
     );
-  }, [state.mode, state.teams, state.players, onAddPoints]);
+  }, [
+    selectedParticipantId,
+    state.mode,
+    state.teams,
+    state.players,
+    onAddPoints,
+    setSelectedPlayerId,
+    setCustomPointsOpen,
+  ]);
 
   const handleResetPoints = useCallback(async () => {
     const confirmed = await confirmResetPoints();

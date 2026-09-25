@@ -52,7 +52,11 @@ npm run preview
 ## Uso
 
 1. **Configurar partida**: Al iniciar la aplicación, selecciona el modo de juego y asigna nombres a los jugadores/equipos
-2. **Registrar puntos**: Usa los botones de puntuación rápida o el teclado numérico para valores personalizados
+2. **Registrar puntos**:
+   - Toca la tarjeta del jugador/equipo al que quieres sumar puntos
+   - Selecciona el valor de puntos en la barra inferior compartida
+   - La tarjeta se deselecciona automáticamente después de agregar puntos
+   - Toca la misma tarjeta nuevamente para deseleccionar sin agregar puntos
 3. **Gestionar partidas**:
    - Reiniciar puntos de la partida actual
    - Iniciar nueva serie (mantiene victorias)
