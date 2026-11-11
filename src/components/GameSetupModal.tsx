@@ -10,60 +10,35 @@ interface Props {
   onStartGame: (mode: GameMode, names: string[], teamNames?: string[]) => void;
 }
 
+const PLAYER_COUNT: Record<GameMode, number> = {
+  "2p": 2,
+  "3p": 3,
+  "4p": 4,
+  teams: 4,
+};
+
 export function GameSetupModal({ isOpen, onStartGame }: Props) {
   const [selectedMode, setSelectedMode] = useState<GameMode>("2p");
-  const [playerNames, setPlayerNames] = useState<string[]>(["", ""]);
+  const [playerNames, setPlayerNames] = useState<string[]>(["", "", "", ""]);
   const [teamNames, setTeamNames] = useState<string[]>([
     "Equipo 1",
     "Equipo 2",
   ]);
 
-  const handleModeChange = (mode: GameMode) => {
-    setSelectedMode(mode);
-    // Reset names based on mode
-    if (mode === "2p") {
-      setPlayerNames(["", ""]);
-    } else if (mode === "3p") {
-      setPlayerNames(["", "", ""]);
-    } else if (mode === "4p") {
-      setPlayerNames(["", "", "", ""]);
-    } else if (mode === "teams") {
-      setPlayerNames(["", "", "", ""]); // 4 players for 2 teams
-      setTeamNames(["Equipo 1", "Equipo 2"]);
-    }
-  };
+  const isTeams = selectedMode === "teams";
 
   const handleStartGame = () => {
-    const validNames = playerNames.map(
-      (name, index) =>
-        name.trim() ||
-        (selectedMode === "teams"
-          ? `Jugador ${index + 1}`
-          : `Jugador ${index + 1}`),
-    );
+    const validNames = playerNames
+      .slice(0, PLAYER_COUNT[selectedMode])
+      .map((name, index) => name.trim() || `Jugador ${index + 1}`);
 
-    if (selectedMode === "teams") {
+    if (isTeams) {
       const validTeamNames = teamNames.map(
         (name, index) => name.trim() || `Equipo ${index + 1}`,
       );
       onStartGame(selectedMode, validNames, validTeamNames);
     } else {
       onStartGame(selectedMode, validNames);
-    }
-  };
-
-  const getPlayerCount = () => {
-    switch (selectedMode) {
-      case "2p":
-        return 2;
-      case "3p":
-        return 3;
-      case "4p":
-        return 4;
-      case "teams":
-        return 4;
-      default:
-        return 2;
     }
   };
 
@@ -82,39 +57,61 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
             </h3>
             <ModeSelector
               selectedMode={selectedMode}
-              onSelect={handleModeChange}
+              onSelect={setSelectedMode}
             />
           </div>
 
           <div>
             <h3 className="text-sm font-semibold text-muted-foreground mb-3">
-              {selectedMode === "teams"
-                ? "Nombres de Equipos"
-                : "Nombres de Jugadores"}
+              {isTeams ? "Nombres de Equipos" : "Nombres de Jugadores"}
             </h3>
-            {selectedMode === "teams" ? (
-              <>
-                <NameEditor
-                  names={teamNames}
-                  onChange={setTeamNames}
-                  mode="teams"
-                />
-                <h3 className="text-sm font-semibold text-muted-foreground mb-3 mt-4">
-                  Jugadores por Equipo
-                </h3>
-                <NameEditor
-                  names={playerNames}
-                  onChange={setPlayerNames}
-                  mode="players"
-                />
-              </>
-            ) : (
-              <NameEditor
-                names={playerNames.slice(0, getPlayerCount())}
-                onChange={(names) => setPlayerNames(names)}
-                mode="players"
-              />
-            )}
+            <div
+              inert={!isTeams}
+              aria-hidden={!isTeams}
+              className={`grid motion-safe:transition-[grid-template-rows,opacity] motion-safe:duration-200 ${
+                isTeams
+                  ? "grid-rows-[1fr] opacity-100"
+                  : "grid-rows-[0fr] opacity-0"
+              }`}
+            >
+              <div className="min-h-0 overflow-hidden">
+                <div>
+                  <NameEditor
+                    names={teamNames}
+                    onChange={setTeamNames}
+                    mode="teams"
+                  />
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-3 mt-4">
+                    Jugadores por Equipo
+                  </h3>
+                  <NameEditor
+                    names={playerNames}
+                    onChange={setPlayerNames}
+                    mode="players"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              inert={isTeams}
+              aria-hidden={isTeams}
+              className={`grid motion-safe:transition-[grid-template-rows,opacity] motion-safe:duration-200 ${
+                isTeams
+                  ? "grid-rows-[0fr] opacity-0"
+                  : "grid-rows-[1fr] opacity-100"
+              }`}
+            >
+              <div className="min-h-0 overflow-hidden">
+                <div>
+                  <NameEditor
+                    names={playerNames}
+                    onChange={setPlayerNames}
+                    mode="players"
+                    visibleCount={PLAYER_COUNT[selectedMode]}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           <Button

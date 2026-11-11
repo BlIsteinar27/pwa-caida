@@ -1,6 +1,5 @@
 import { Button } from "./ui/button";
 import { Delete } from "lucide-react";
-import { memo } from "react";
 
 interface Props {
   onNumber: (num: number) => void;
@@ -8,11 +7,7 @@ interface Props {
   onBackspace: () => void;
 }
 
-export const NumericKeypad = memo(function NumericKeypad({
-  onNumber,
-  onClear,
-  onBackspace,
-}: Props) {
+export function NumericKeypad({ onNumber, onClear, onBackspace }: Props) {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
   return (
@@ -45,4 +40,4 @@ export const NumericKeypad = memo(function NumericKeypad({
       </Button>
     </div>
   );
-});
+}

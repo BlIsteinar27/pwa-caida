@@ -18,8 +18,9 @@ Aplicación web progresiva (PWA) para llevar el puntaje del juego de cartas "Cai
 - **Íconos Lucide**: Iconografía consistente basada en `lucide-react`
 - **Accesibilidad**: Tarjetas seleccionables con teclado (Enter/Espacio), `aria-pressed`, focus visible y soporte para `prefers-reduced-motion`
 - **Micro-interacciones**: Press-scale en controles, animación del puntaje al cambiar y entrada animada de la tarjeta de ganador
+- **Animaciones tipo acordeón**: En la configuración de partida, las filas de nombres y las secciones se expanden/colapsan suavemente al cambiar de modo (CSS `grid-template-rows` + transiciones, sin librerías de animación)
 - **Diálogos de confirmación**: Prevención de acciones destructivas
-- **Optimización de rendimiento**: Componentes memoizados y cálculos optimizados para una experiencia fluida
+- **Optimización de rendimiento**: React Compiler memoiza automáticamente componentes y cálculos para una experiencia fluida
 
 ## Tecnologías
 
@@ -115,12 +116,11 @@ El tema se alterna con el botón ☀️/🌙 en la esquina superior derecha y se
 
 La aplicación implementa varias optimizaciones para garantizar una experiencia fluida:
 
-- **Componentes memoizados**: `ModeSelector`, `ScoreBoard`, `NameEditor`, y `NumericKeypad` usan `React.memo` para evitar re-renders innecesarios
-- **useMemo para cálculos costosos**: Cálculos como nombres de jugadores y valores parseados se memoizan para evitar repetición
-- **useCallback para handlers**: Funciones de evento se memoizan para estabilidad de referencias
-- **Optimización de localStorage**: El estado se guarda solo cuando cambian datos relevantes, reduciendo escrituras en storage
+- **React Compiler**: La memoización de componentes, valores y handlers es automática — no se usan `memo`, `useMemo` ni `useCallback` manuales
+- **Animaciones solo con CSS**: Todas las animaciones usan utilidades de Tailwind + `tw-animate-css` y transiciones CSS, sin librerías de animación en JS — bundle más ligero y animaciones aceleradas por GPU
+- **Optimización de localStorage**: Las escrituras en storage se hacen con debounce vía `useLocalStorage` y el efecto de persistencia usa `useEffectEvent` (React 19.2)
 - **Keys estables**: Las listas usan keys compuestos para evitar problemas de renderizado
-- **Lazy de handlers**: Handlers vacíos se eliminan para evitar re-renders innecesarios
+- **TypeScript strict**: El proyecto compila con `strict: true` habilitado
 
 ## Despliegue
 

@@ -1,5 +1,4 @@
 import type { GameMode } from "../types/game";
-import { memo } from "react";
 import { Users, UsersRound, Trophy } from "lucide-react";
 
 interface Props {
@@ -7,10 +6,7 @@ interface Props {
   onSelect: (mode: GameMode) => void;
 }
 
-export const ModeSelector = memo(function ModeSelector({
-  selectedMode,
-  onSelect,
-}: Props) {
+export function ModeSelector({ selectedMode, onSelect }: Props) {
   const modes = [
     { value: "2p" as GameMode, label: "2 Jugadores", icon: Users },
     { value: "3p" as GameMode, label: "3 Jugadores", icon: UsersRound },
@@ -49,4 +45,4 @@ export const ModeSelector = memo(function ModeSelector({
       })}
     </div>
   );
-});
+}

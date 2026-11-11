@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useMemo } from "react";
+import { useReducer, useEffect, useEffectEvent } from "react";
 import {
   gameReducer,
   initialGameState,
@@ -6,7 +6,7 @@ import {
 } from "./reducers/gameReducer";
 import { ScoreBoard } from "./components/scoreBoard";
 import { useLocalStorage } from "./hooks/useLocalStorage";
-import type { GameMode } from "./types/game";
+import type { GameMode, GameState } from "./types/game";
 
 export default function App() {
   const [state, dispatch] = useReducer(
@@ -16,8 +16,8 @@ export default function App() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         try {
-          return JSON.parse(saved);
-        } catch (e) {
+          return JSON.parse(saved) as GameState;
+        } catch {
           return defaultState;
         }
       }
@@ -31,14 +31,13 @@ export default function App() {
     500,
   );
 
-  const stateForStorage = useMemo(
-    () => state,
-    [state.mode, state.players, state.teams, state.history],
-  );
+  const persistState = useEffectEvent((s: GameState) => {
+    setLocalStorageState(s);
+  });
 
   useEffect(() => {
-    setLocalStorageState(stateForStorage);
-  }, [stateForStorage, setLocalStorageState]);
+    persistState(state);
+  }, [state]);
 
   const handleInitGame = (
     mode: GameMode,

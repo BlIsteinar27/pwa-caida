@@ -6,7 +6,7 @@ import { CustomPointsModal } from "./CustomPointsModal";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { ThemeToggle } from "./ThemeToggle";
 import { useConfirmations } from "../utils/confirmations";
-import { useState, useCallback, memo, useMemo } from "react";
+import { useState } from "react";
 import {
   RotateCcw,
   RefreshCcw,
@@ -93,7 +93,7 @@ interface ScoreCardProps {
   members?: string[];
 }
 
-const ScoreCard = memo(function ScoreCard({
+function ScoreCard({
   name,
   wins,
   score,
@@ -146,7 +146,7 @@ const ScoreCard = memo(function ScoreCard({
       </CardContent>
     </Card>
   );
-});
+}
 
 interface Props {
   state: GameState;
@@ -159,7 +159,7 @@ interface Props {
   onInitGame: (mode: GameState["mode"], names: string[], teamNames?: string[]) => void;
 }
 
-export const ScoreBoard = memo(function ScoreBoard({
+export function ScoreBoard({
   state,
   onAddPoints,
   onUndo,
@@ -182,15 +182,15 @@ export const ScoreBoard = memo(function ScoreBoard({
     closeConfirmation,
   } = useConfirmations();
 
-  const selectedPlayerName = useMemo(() => {
+  const selectedPlayerName = (() => {
     if (selectedPlayerId === null) return "";
     if (state.mode === "teams") {
       return state.teams.find((t) => t.id === selectedPlayerId)?.name || "";
     }
     return state.players.find((p) => p.id === selectedPlayerId)?.name || "";
-  }, [selectedPlayerId, state.mode, state.teams, state.players]);
+  })();
 
-  const renderPlayers = useCallback(() => {
+  const renderPlayers = () => {
     const toggle = (id: number) =>
       setSelectedParticipantId((prev) => (prev === id ? null : id));
 
@@ -236,9 +236,9 @@ export const ScoreBoard = memo(function ScoreBoard({
         })}
       </div>
     );
-  }, [state.mode, state.teams, state.players, selectedParticipantId]);
+  };
 
-  const renderPointButtons = useCallback(() => {
+  const renderPointButtons = () => {
     const cantos = [
       { label: "+1", pts: 1 },
       { label: "+2", pts: 2 },
@@ -337,43 +337,34 @@ export const ScoreBoard = memo(function ScoreBoard({
         </div>
       </div>
     );
-  }, [
-    selectedParticipantId,
-    state.mode,
-    state.teams,
-    state.players,
-    onAddPoints,
-  ]);
+  };
 
-  const handleResetPoints = useCallback(async () => {
+  const handleResetPoints = async () => {
     const confirmed = await confirmResetPoints();
     if (confirmed) {
       onResetPoints();
     }
-  }, [confirmResetPoints, onResetPoints]);
+  };
 
-  const handleResetSeries = useCallback(async () => {
+  const handleResetSeries = async () => {
     const confirmed = await confirmResetSeries();
     if (confirmed) {
       onResetSeries();
     }
-  }, [confirmResetSeries, onResetSeries]);
+  };
 
-  const handleResetAll = useCallback(async () => {
+  const handleResetAll = async () => {
     const confirmed = await confirmResetAll();
     if (confirmed) {
       onResetAll();
     }
-  }, [confirmResetAll, onResetAll]);
+  };
 
-  const handleCustomPoints = useCallback(
-    (points: number) => {
-      if (selectedPlayerId !== null) {
-        onAddPoints(selectedPlayerId, points);
-      }
-    },
-    [selectedPlayerId, onAddPoints],
-  );
+  const handleCustomPoints = (points: number) => {
+    if (selectedPlayerId !== null) {
+      onAddPoints(selectedPlayerId, points);
+    }
+  };
 
   return (
     <div className="flex flex-col h-dvh max-w-md md:max-w-2xl lg:max-w-4xl mx-auto p-4 md:p-6 lg:p-8 justify-between bg-linear-to-br from-pink-100/60 via-purple-50/80 to-blue-100/50 dark:from-purple-950/50 dark:via-background dark:to-blue-950/40 text-foreground select-none overflow-y-auto">
@@ -465,4 +456,4 @@ export const ScoreBoard = memo(function ScoreBoard({
       />
     </div>
   );
-});
+}
