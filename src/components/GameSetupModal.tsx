@@ -44,7 +44,10 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={undefined}>
-      <DialogContent className="max-w-64 sm:max-w-md" showCloseButton={false}>
+      <DialogContent
+        className="max-w-64 sm:max-w-md top-[calc(50%_-_var(--keyboard-height,0px)/2)] max-h-[calc(100dvh_-_2rem_-_var(--keyboard-height,0px))] motion-safe:transition-[top,max-height] motion-safe:duration-200"
+        showCloseButton={false}
+      >
         <DialogHeader>
           <DialogTitle className="text-center text-lg">
             Configurar Partida

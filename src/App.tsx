@@ -6,6 +6,7 @@ import {
 } from "./reducers/gameReducer";
 import { ScoreBoard } from "./components/scoreBoard";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import { useVirtualKeyboard } from "./hooks/useVirtualKeyboard";
 import type { GameMode, GameState } from "./types/game";
 
 export default function App() {
@@ -30,6 +31,8 @@ export default function App() {
     initialGameState,
     500,
   );
+
+  useVirtualKeyboard();
 
   const persistState = useEffectEvent((s: GameState) => {
     setLocalStorageState(s);
