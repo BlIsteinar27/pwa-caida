@@ -69,15 +69,15 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={undefined}>
-      <DialogContent className="bg-white border border-purple-200 text-gray-800 max-w-md shadow-xl">
+      <DialogContent className="max-w-64 sm:max-w-md" showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle className="text-gray-800 text-center">
+          <DialogTitle className="text-center text-lg">
             Configurar Partida
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
           <div>
-            <h3 className="text-sm font-semibold text-gray-600 mb-3">
+            <h3 className="text-sm font-semibold text-muted-foreground mb-3">
               Modo de Juego
             </h3>
             <ModeSelector
@@ -87,7 +87,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-gray-600 mb-3">
+            <h3 className="text-sm font-semibold text-muted-foreground mb-3">
               {selectedMode === "teams"
                 ? "Nombres de Equipos"
                 : "Nombres de Jugadores"}
@@ -99,7 +99,7 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
                   onChange={setTeamNames}
                   mode="teams"
                 />
-                <h3 className="text-sm font-semibold text-gray-600 mb-3 mt-4">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-3 mt-4">
                   Jugadores por Equipo
                 </h3>
                 <NameEditor
@@ -118,7 +118,8 @@ export function GameSetupModal({ isOpen, onStartGame }: Props) {
           </div>
 
           <Button
-            className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold"
+            size="lg"
+            className="w-full font-bold"
             onClick={handleStartGame}
           >
             Iniciar Partida

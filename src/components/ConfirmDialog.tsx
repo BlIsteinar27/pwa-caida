@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { Info, TriangleAlert } from "lucide-react";
 
 interface Props {
   isOpen: boolean;
@@ -27,41 +28,37 @@ export function ConfirmDialog({
     onClose();
   };
 
-  const getConfirmButtonClass = () => {
-    switch (variant) {
-      case "danger":
-        return "bg-red-500 hover:bg-red-400 text-white";
-      case "warning":
-        return "bg-purple-500 hover:bg-purple-400 text-white";
-      case "info":
-        return "bg-blue-500 hover:bg-blue-400 text-white";
-      default:
-        return "bg-purple-500 hover:bg-purple-400 text-white";
-    }
-  };
+  const Icon = variant === "info" ? Info : TriangleAlert;
+  const iconClass =
+    variant === "danger"
+      ? "text-destructive"
+      : variant === "info"
+        ? "text-blue-500 dark:text-blue-400"
+        : "text-primary";
+
+  const confirmClass =
+    variant === "danger"
+      ? "flex-1 bg-destructive text-white hover:bg-destructive/90"
+      : variant === "info"
+        ? "flex-1 bg-blue-600 text-white hover:bg-blue-500"
+        : "flex-1";
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-white border-purple-200 text-gray-800 max-w-sm shadow-xl">
-        <DialogHeader>
-          <DialogTitle className="text-gray-800 text-center text-lg font-bold">
+      <DialogContent className="max-w-68 sm:max-w-sm" showCloseButton={false}>
+        <DialogHeader className="items-center gap-3">
+          <Icon className={`size-8 ${iconClass}`} strokeWidth={1.75} />
+          <DialogTitle className="text-center text-lg font-bold">
             {title}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <p className="text-gray-600 text-center">{message}</p>
+          <p className="text-muted-foreground text-center">{message}</p>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100"
-              onClick={onClose}
-            >
+            <Button variant="outline" className="flex-1" onClick={onClose}>
               {cancelText}
             </Button>
-            <Button
-              className={`flex-1 ${getConfirmButtonClass()}`}
-              onClick={handleConfirm}
-            >
+            <Button className={confirmClass} onClick={handleConfirm}>
               {confirmText}
             </Button>
           </div>

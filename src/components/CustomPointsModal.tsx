@@ -49,14 +49,14 @@ export function CustomPointsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-white border border-purple-200 text-gray-800 max-w-sm shadow-xl">
+      <DialogContent className="max-w-64 sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-gray-800 text-center text-xl">
+          <DialogTitle className="text-center text-lg">
             Agregar puntos a {playerName}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="text-4xl font-black text-purple-600 text-center py-4">
+          <div className="text-4xl font-black tabular-nums text-primary text-center py-4">
             {displayValue}
           </div>
           <NumericKeypad
@@ -65,21 +65,13 @@ export function CustomPointsModal({
             onBackspace={handleBackspace}
           />
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1 border-red-300 text-red-600 hover:bg-red-100/50"
-              onClick={onClose}
-            >
+            <Button variant="outline" className="flex-1" onClick={onClose}>
               Cancelar
             </Button>
             <Button
-              className="flex-1 bg-purple-600 hover:bg-purple-500 text-white"
+              className="flex-1"
               onClick={handleConfirm}
-              disabled={
-                !currentValue ||
-                parseInt(currentValue) <= 0 ||
-                parseInt(currentValue) > 24
-              }
+              disabled={parsedValue <= 0 || parsedValue > 24}
             >
               Agregar
             </Button>

@@ -1,4 +1,5 @@
 import { Button } from "./ui/button";
+import { Delete } from "lucide-react";
 import { memo } from "react";
 
 interface Props {
@@ -20,25 +21,27 @@ export const NumericKeypad = memo(function NumericKeypad({
         <Button
           key={num}
           onClick={() => onNumber(num)}
-          className="bg-white/80 border border-purple-200 hover:bg-white/90 text-purple-700 text-2xl font-bold h-12 rounded-lg shadow-md transition-colors"
-          variant="secondary"
+          className="bg-card border-border hover:bg-muted text-foreground text-2xl font-bold tabular-nums h-12 rounded-lg shadow-sm"
+          variant="outline"
         >
           {num}
         </Button>
       ))}
       <Button
         onClick={onClear}
-        className="bg-red-100/80 border border-red-300 hover:bg-red-200/80 text-red-600 font-bold h-12 rounded-lg shadow-md transition-colors"
+        className="bg-destructive/10 border-destructive/30 hover:bg-destructive/20 text-destructive font-bold h-12 rounded-lg shadow-sm"
         variant="outline"
+        aria-label="Borrar todo"
       >
         C
       </Button>
       <Button
         onClick={onBackspace}
-        className="bg-purple-100/80 border border-purple-200 hover:bg-purple-200/80 text-purple-600 font-bold h-12 rounded-lg shadow-md transition-colors"
+        className="bg-muted border-border hover:bg-muted/70 text-foreground font-bold h-12 rounded-lg shadow-sm"
         variant="outline"
+        aria-label="Borrar último dígito"
       >
-        ⌫
+        <Delete className="size-5" />
       </Button>
     </div>
   );

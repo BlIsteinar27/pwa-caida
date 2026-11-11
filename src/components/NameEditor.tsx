@@ -1,6 +1,7 @@
 import { useState, memo } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { Check, Pencil, X } from "lucide-react";
 
 interface Props {
   names: string[];
@@ -52,36 +53,42 @@ export const NameEditor = memo(function NameEditor({
               <Input
                 value={tempName}
                 onChange={(e) => setTempName(e.target.value)}
-                className="flex-1 bg-white/80 border-purple-200 text-gray-800"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSave();
+                  if (e.key === "Escape") handleCancel();
+                }}
+                className="flex-1"
                 placeholder={getPlaceholder(index)}
                 autoFocus
               />
               <Button
                 onClick={handleSave}
-                className="bg-purple-600 hover:bg-purple-500 text-white"
-                size="sm"
+                size="icon-sm"
+                aria-label="Guardar nombre"
               >
-                ✓
+                <Check />
               </Button>
               <Button
                 onClick={handleCancel}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700"
-                size="sm"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Cancelar edición"
               >
-                ✗
+                <X />
               </Button>
             </>
           ) : (
             <>
-              <div className="flex-1 bg-white/60 border border-purple-200 rounded px-2.5 py-1 text-gray-700">
+              <div className="flex-1 bg-muted/50 border border-border rounded-lg px-2.5 py-1.5 text-sm text-foreground">
                 {name || getPlaceholder(index)}
               </div>
               <Button
                 onClick={() => handleEdit(index, name)}
-                className="bg-purple-500 hover:bg-purple-400 text-white"
-                size="sm"
+                variant="secondary"
+                size="icon-sm"
+                aria-label={`Editar ${name || getPlaceholder(index)}`}
               >
-                ✎
+                <Pencil />
               </Button>
             </>
           )}

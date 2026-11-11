@@ -13,6 +13,11 @@ Aplicación web progresiva (PWA) para llevar el puntaje del juego de cartas "Cai
 - **Interfaz responsive**: Diseño optimizado para móviles, tablets y escritorio con adaptación automática
 - **Soporte tablet**: Layout optimizado 2-columnas con touch targets mejorados para tablets
 - **Modo equipos**: Muestra nombres de jugadores por equipo
+- **Modo oscuro**: Tema claro/oscuro con toggle persistente, detección de `prefers-color-scheme` y sin flash al cargar
+- **Sistema de diseño por tokens**: Toda la UI usa tokens semánticos (`bg-card`, `text-foreground`, `bg-primary`, etc.) definidos en `index.css` con variantes claras y oscuras
+- **Íconos Lucide**: Iconografía consistente basada en `lucide-react`
+- **Accesibilidad**: Tarjetas seleccionables con teclado (Enter/Espacio), `aria-pressed`, focus visible y soporte para `prefers-reduced-motion`
+- **Micro-interacciones**: Press-scale en controles, animación del puntaje al cambiar y entrada animada de la tarjeta de ganador
 - **Diálogos de confirmación**: Prevención de acciones destructivas
 - **Optimización de rendimiento**: Componentes memoizados y cálculos optimizados para una experiencia fluida
 
@@ -21,8 +26,10 @@ Aplicación web progresiva (PWA) para llevar el puntaje del juego de cartas "Cai
 - **React 19** con React Compiler
 - **TypeScript** para tipado estático
 - **Vite** como bundler
-- **Tailwind CSS** para estilos
+- **Tailwind CSS v4** para estilos (tokens en `@theme`)
 - **Base UI** para componentes de interfaz
+- **Lucide React** para íconos
+- **tw-animate-css** para animaciones
 - **vite-plugin-pwa** para funcionalidad PWA
 
 ## Instalación
@@ -68,11 +75,15 @@ npm run preview
 ```
 src/
 ├── components/          # Componentes React
-│   ├── ui/             # Componentes UI base
+│   ├── ui/             # Componentes UI base (button, card, dialog, input, badge)
 │   ├── scoreBoard.tsx  # Tablero principal de puntuación
 │   ├── GameSetupModal.tsx
 │   ├── CustomPointsModal.tsx
-│   └── ConfirmDialog.tsx
+│   ├── ConfirmDialog.tsx
+│   ├── ModeSelector.tsx
+│   ├── NameEditor.tsx
+│   ├── NumericKeypad.tsx
+│   └── ThemeToggle.tsx # Toggle de modo claro/oscuro
 ├── reducers/           # Reducers de estado
 │   └── gameReducer.ts  # Lógica del juego
 ├── hooks/              # Hooks personalizados
@@ -95,6 +106,10 @@ El estado del juego incluye:
 - Contador de victorias
 
 Los datos se persisten automáticamente en localStorage con la clave `caida-game-state`.
+
+## Tema claro/oscuro
+
+El tema se alterna con el botón ☀️/🌙 en la esquina superior derecha y se persiste en localStorage con la clave `caida-theme`. Si no hay preferencia guardada, se usa `prefers-color-scheme` del sistema. La clase `.dark` se aplica en `<html>` antes del primer render para evitar flash de tema incorrecto.
 
 ## Optimizaciones de rendimiento
 

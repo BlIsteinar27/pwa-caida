@@ -4,8 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GameSetupModal } from "./GameSetupModal";
 import { CustomPointsModal } from "./CustomPointsModal";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { ThemeToggle } from "./ThemeToggle";
 import { useConfirmations } from "../utils/confirmations";
 import { useState, useCallback, memo, useMemo } from "react";
+import {
+  RotateCcw,
+  RefreshCcw,
+  Sparkles,
+  Undo2,
+  Trophy,
+} from "lucide-react";
 
 // Colores para jugadores y equipos
 type PlayerColor = "blue" | "red" | "green" | "yellow";
@@ -19,53 +27,126 @@ const getPlayerColor = (id: number, mode: GameState["mode"]): PlayerColor => {
   return colors[id] || "blue";
 };
 
-const colorClasses: Record<
-  PlayerColor,
-  {
-    card: string;
-    buttonRow: string;
-    accent: string;
-    secondaryButton: string;
-    tertiaryButton: string;
-  }
-> = {
+interface ColorClasses {
+  card: string;
+  buttonRow: string;
+  accent: string;
+  secondaryButton: string;
+  tertiaryButton: string;
+  selectedRing: string;
+}
+
+const colorClasses: Record<PlayerColor, ColorClasses> = {
   blue: {
-    card: "bg-blue-50/70 border-blue-200 hover:bg-blue-100/80",
-    buttonRow: "bg-blue-100/30 border-blue-200",
-    accent: "text-blue-600",
+    card: "bg-blue-50/80 border-blue-200 hover:bg-blue-100/80 dark:bg-blue-950/40 dark:border-blue-900/70 dark:hover:bg-blue-900/40",
+    buttonRow:
+      "bg-blue-100/40 border-blue-200 dark:bg-blue-950/30 dark:border-blue-900/60",
+    accent: "text-blue-600 dark:text-blue-400",
     secondaryButton:
-      "bg-blue-50/80 border-blue-200 hover:bg-blue-100/80 text-blue-700",
+      "bg-blue-50/80 border-blue-200 hover:bg-blue-100/80 text-blue-700 dark:bg-blue-950/50 dark:border-blue-800 dark:hover:bg-blue-900/50 dark:text-blue-300",
     tertiaryButton:
-      "border-blue-200 bg-blue-50/80 hover:bg-blue-100/80 text-blue-600",
+      "border-blue-200 bg-blue-50/80 hover:bg-blue-100/80 text-blue-600 dark:bg-blue-950/50 dark:border-blue-800 dark:hover:bg-blue-900/50 dark:text-blue-300",
+    selectedRing: "ring-blue-500 dark:ring-blue-400",
   },
   red: {
-    card: "bg-red-50/70 border-red-200 hover:bg-red-100/80",
-    buttonRow: "bg-red-100/30 border-red-200",
-    accent: "text-red-600",
+    card: "bg-red-50/80 border-red-200 hover:bg-red-100/80 dark:bg-red-950/40 dark:border-red-900/70 dark:hover:bg-red-900/40",
+    buttonRow:
+      "bg-red-100/40 border-red-200 dark:bg-red-950/30 dark:border-red-900/60",
+    accent: "text-red-600 dark:text-red-400",
     secondaryButton:
-      "bg-red-50/80 border-red-200 hover:bg-red-100/80 text-red-700",
+      "bg-red-50/80 border-red-200 hover:bg-red-100/80 text-red-700 dark:bg-red-950/50 dark:border-red-800 dark:hover:bg-red-900/50 dark:text-red-300",
     tertiaryButton:
-      "border-red-200 bg-red-50/80 hover:bg-red-100/80 text-red-600",
+      "border-red-200 bg-red-50/80 hover:bg-red-100/80 text-red-600 dark:bg-red-950/50 dark:border-red-800 dark:hover:bg-red-900/50 dark:text-red-300",
+    selectedRing: "ring-red-500 dark:ring-red-400",
   },
   green: {
-    card: "bg-green-50/70 border-green-200 hover:bg-green-100/80",
-    buttonRow: "bg-green-100/30 border-green-200",
-    accent: "text-green-600",
+    card: "bg-green-50/80 border-green-200 hover:bg-green-100/80 dark:bg-green-950/40 dark:border-green-900/70 dark:hover:bg-green-900/40",
+    buttonRow:
+      "bg-green-100/40 border-green-200 dark:bg-green-950/30 dark:border-green-900/60",
+    accent: "text-green-700 dark:text-green-400",
     secondaryButton:
-      "bg-green-50/80 border-green-200 hover:bg-green-100/80 text-green-700",
+      "bg-green-50/80 border-green-200 hover:bg-green-100/80 text-green-700 dark:bg-green-950/50 dark:border-green-800 dark:hover:bg-green-900/50 dark:text-green-300",
     tertiaryButton:
-      "border-green-200 bg-green-50/80 hover:bg-green-100/80 text-green-600",
+      "border-green-200 bg-green-50/80 hover:bg-green-100/80 text-green-700 dark:bg-green-950/50 dark:border-green-800 dark:hover:bg-green-900/50 dark:text-green-300",
+    selectedRing: "ring-green-600 dark:ring-green-400",
   },
   yellow: {
-    card: "bg-yellow-50/70 border-yellow-200 hover:bg-yellow-100/80",
-    buttonRow: "bg-yellow-100/30 border-yellow-200",
-    accent: "text-yellow-600",
+    card: "bg-yellow-50/80 border-yellow-200 hover:bg-yellow-100/80 dark:bg-yellow-950/40 dark:border-yellow-900/70 dark:hover:bg-yellow-900/40",
+    buttonRow:
+      "bg-yellow-100/40 border-yellow-200 dark:bg-yellow-950/30 dark:border-yellow-900/60",
+    accent: "text-yellow-700 dark:text-yellow-300",
     secondaryButton:
-      "bg-yellow-50/80 border-yellow-200 hover:bg-yellow-100/80 text-yellow-700",
+      "bg-yellow-50/80 border-yellow-200 hover:bg-yellow-100/80 text-yellow-800 dark:bg-yellow-950/50 dark:border-yellow-800 dark:hover:bg-yellow-900/50 dark:text-yellow-200",
     tertiaryButton:
-      "border-yellow-200 bg-yellow-50/80 hover:bg-yellow-100/80 text-yellow-600",
+      "border-yellow-200 bg-yellow-50/80 hover:bg-yellow-100/80 text-yellow-700 dark:bg-yellow-950/50 dark:border-yellow-800 dark:hover:bg-yellow-900/50 dark:text-yellow-300",
+    selectedRing: "ring-yellow-500 dark:ring-yellow-400",
   },
 };
+
+interface ScoreCardProps {
+  name: string;
+  wins: number;
+  score: number;
+  colorClass: ColorClasses;
+  selected: boolean;
+  onToggle: () => void;
+  members?: string[];
+}
+
+const ScoreCard = memo(function ScoreCard({
+  name,
+  wins,
+  score,
+  colorClass,
+  selected,
+  onToggle,
+  members,
+}: ScoreCardProps) {
+  return (
+    <Card
+      role="button"
+      tabIndex={0}
+      aria-pressed={selected}
+      onClick={onToggle}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
+      className={`${colorClass.card} border shadow-md flex flex-col justify-between cursor-pointer select-none transition-[background-color,border-color,box-shadow,scale] duration-150 motion-safe:active:scale-[0.96] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 ${
+        selected
+          ? `ring-2 ring-offset-2 ring-offset-background shadow-lg ${colorClass.selectedRing}`
+          : ""
+      }`}
+    >
+      <CardHeader className="p-3 md:p-4 lg:p-5 pb-0 text-center">
+        <CardTitle className="text-lg md:text-xl lg:text-2xl text-foreground truncate font-semibold">
+          {name}
+        </CardTitle>
+        <span className="text-xs text-muted-foreground tabular-nums">
+          Ganadas: {wins}
+        </span>
+      </CardHeader>
+      <CardContent className="p-3 md:p-4 lg:p-5 text-center flex-1 flex flex-col justify-center items-center">
+        {members && (
+          <div className="text-xs text-muted-foreground mb-2 space-y-1">
+            {members.map((member) => (
+              <div key={member}>{member}</div>
+            ))}
+          </div>
+        )}
+        <span
+          key={score}
+          className={`text-6xl md:text-7xl lg:text-8xl font-black tabular-nums leading-none motion-safe:animate-in motion-safe:zoom-in-75 motion-safe:duration-150 ${colorClass.accent}`}
+        >
+          {score}
+        </span>
+        <span className="text-xs text-muted-foreground mt-1">/ 24 pts</span>
+      </CardContent>
+    </Card>
+  );
+});
 
 interface Props {
   state: GameState;
@@ -75,7 +156,7 @@ interface Props {
   onResetPoints: () => void;
   onResetSeries: () => void;
   onResetAll: () => void;
-  onInitGame: (mode: any, names: string[], teamNames?: string[]) => void;
+  onInitGame: (mode: GameState["mode"], names: string[], teamNames?: string[]) => void;
 }
 
 export const ScoreBoard = memo(function ScoreBoard({
@@ -110,46 +191,25 @@ export const ScoreBoard = memo(function ScoreBoard({
   }, [selectedPlayerId, state.mode, state.teams, state.players]);
 
   const renderPlayers = useCallback(() => {
+    const toggle = (id: number) =>
+      setSelectedParticipantId((prev) => (prev === id ? null : id));
+
     if (state.mode === "teams") {
       return (
         <div className="grid grid-cols-2 gap-4 md:gap-6 lg:gap-8 flex-1 my-2">
           {state.teams.map((team) => {
             const color = getPlayerColor(team.id, state.mode);
-            const colorClass = colorClasses[color];
             return (
-              <Card
+              <ScoreCard
                 key={team.id}
-                className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors cursor-pointer`}
-                onClick={() =>
-                  setSelectedParticipantId((prev) =>
-                    prev === team.id ? null : team.id,
-                  )
-                }
-              >
-                <CardHeader className="p-3 md:p-4 lg:p-5 pb-0 text-center">
-                  <CardTitle className="text-lg md:text-xl lg:text-2xl text-gray-800 truncate font-semibold">
-                    {team.name}
-                  </CardTitle>
-                  <span className="text-xs text-gray-500">
-                    Ganadas: {team.wins}
-                  </span>
-                </CardHeader>
-                <CardContent className="p-3 md:p-4 lg:p-5 text-center flex-1 flex flex-col justify-center items-center">
-                  <div className="text-xs text-gray-600 mb-2 space-y-1">
-                    {team.players.map((player) => (
-                      <div key={player.id} className="text-gray-500">
-                        {player.name}
-                      </div>
-                    ))}
-                  </div>
-                  <span
-                    className={`text-6xl md:text-7xl lg:text-8xl font-black ${colorClass.accent}`}
-                  >
-                    {team.score}
-                  </span>
-                  <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
-                </CardContent>
-              </Card>
+                name={team.name}
+                wins={team.wins}
+                score={team.score}
+                colorClass={colorClasses[color]}
+                selected={selectedParticipantId === team.id}
+                onToggle={() => toggle(team.id)}
+                members={team.players.map((p) => p.name)}
+              />
             );
           })}
         </div>
@@ -158,43 +218,25 @@ export const ScoreBoard = memo(function ScoreBoard({
 
     return (
       <div
-        className={`grid gap-4 md:gap-6 lg:gap-8 flex-1 my-2 ${state.players.length === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-2 lg:grid-cols-4"}`}
+        className={`grid gap-4 md:gap-6 lg:gap-8 flex-1 my-2 ${state.players.length === 2 ? "grid-cols-2" : "grid-cols-2 lg:grid-cols-4"}`}
       >
         {state.players.map((player) => {
           const color = getPlayerColor(player.id, state.mode);
-          const colorClass = colorClasses[color];
           return (
-            <Card
+            <ScoreCard
               key={player.id}
-              className={`${colorClass.card} shadow-lg flex flex-col justify-between transition-colors cursor-pointer`}
-              onClick={() =>
-                setSelectedParticipantId((prev) =>
-                  prev === player.id ? null : player.id,
-                )
-              }
-            >
-              <CardHeader className="p-3 md:p-4 lg:p-5 pb-0 text-center">
-                <CardTitle className="text-lg md:text-xl lg:text-2xl text-gray-800 truncate font-semibold">
-                  {player.name}
-                </CardTitle>
-                <span className="text-xs text-gray-500">
-                  Ganadas: {player.wins}
-                </span>
-              </CardHeader>
-              <CardContent className="p-3 md:p-4 lg:p-5 text-center flex-1 flex flex-col justify-center items-center">
-                <span
-                  className={`text-6xl md:text-7xl lg:text-8xl font-black ${colorClass.accent}`}
-                >
-                  {player.score}
-                </span>
-                <span className="text-xs text-gray-500 mt-1">/ 24 pts</span>
-              </CardContent>
-            </Card>
+              name={player.name}
+              wins={player.wins}
+              score={player.score}
+              colorClass={colorClasses[color]}
+              selected={selectedParticipantId === player.id}
+              onToggle={() => toggle(player.id)}
+            />
           );
         })}
       </div>
     );
-  }, [state.mode, state.teams, state.players]);
+  }, [state.mode, state.teams, state.players, selectedParticipantId]);
 
   const renderPointButtons = useCallback(() => {
     const cantos = [
@@ -207,13 +249,7 @@ export const ScoreBoard = memo(function ScoreBoard({
       { label: "Registro", pts: 12 },
     ];
 
-    let colorClass: {
-      card: string;
-      buttonRow: string;
-      accent: string;
-      secondaryButton: string;
-      tertiaryButton: string;
-    } = colorClasses.blue;
+    let colorClass: ColorClasses = colorClasses.blue;
     let participantName = "";
 
     if (selectedParticipantId !== null) {
@@ -226,59 +262,67 @@ export const ScoreBoard = memo(function ScoreBoard({
             "";
     }
 
+    const hasSelection = selectedParticipantId !== null;
+    const rowClass = hasSelection
+      ? colorClass.buttonRow
+      : "bg-muted/50 border-border";
+    const primaryBtnClass = hasSelection
+      ? colorClass.secondaryButton
+      : "bg-muted/60 border-border";
+    const secondaryBtnClass = hasSelection
+      ? colorClass.tertiaryButton
+      : "bg-muted/60 border-border";
+
+    const addPoints = (pts: number) => {
+      if (selectedParticipantId !== null) {
+        onAddPoints(selectedParticipantId, pts);
+        setSelectedParticipantId(null);
+      }
+    };
+
     return (
       <div className="space-y-3">
-        {selectedParticipantId !== null ? (
-          <span className="text-xs font-semibold text-gray-600">
-            Sumar a {participantName}:
+        {hasSelection ? (
+          <span className="text-xs font-semibold text-foreground">
+            Sumar a <span className={colorClass.accent}>{participantName}</span>:
           </span>
         ) : (
-          <span className="text-xs font-semibold text-gray-400">
+          <span className="text-xs font-semibold text-muted-foreground">
             Toca una tarjeta para agregar puntos
           </span>
         )}
         <div
-          className={`grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-1 md:gap-2 p-2 md:p-3 rounded border ${selectedParticipantId !== null ? colorClass.buttonRow : "bg-gray-100/30 border-gray-200"}`}
+          className={`grid grid-cols-4 lg:grid-cols-8 gap-1.5 md:gap-2 p-2 md:p-3 rounded-2xl border transition-[background-color,border-color] ${rowClass}`}
         >
           {cantos.slice(0, 4).map((canto) => (
             <Button
               key={canto.pts}
               variant="secondary"
-              className={`h-12 md:h-14 lg:h-16 text-lg md:text-xl lg:text-2xl font-bold shadow-md hover:shadow-lg transition-colors ${selectedParticipantId !== null ? colorClass.secondaryButton : "bg-gray-50/80 border-gray-200 text-gray-400 cursor-not-allowed"}`}
-              onClick={() => {
-                if (selectedParticipantId !== null) {
-                  onAddPoints(selectedParticipantId, canto.pts);
-                  setSelectedParticipantId(null);
-                }
-              }}
-              disabled={selectedParticipantId === null}
+              className={`h-12 md:h-14 lg:h-16 text-lg md:text-xl lg:text-2xl font-bold tabular-nums shadow-sm ${primaryBtnClass}`}
+              onClick={() => addPoints(canto.pts)}
+              disabled={!hasSelection}
             >
               {canto.label}
             </Button>
           ))}
         </div>
         <div
-          className={`grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-1 md:gap-2 pt-1 p-2 md:p-3 rounded border ${selectedParticipantId !== null ? colorClass.buttonRow : "bg-gray-100/30 border-gray-200"}`}
+          className={`grid grid-cols-4 lg:grid-cols-8 gap-1.5 md:gap-2 p-2 md:p-3 rounded-2xl border transition-[background-color,border-color] ${rowClass}`}
         >
           {cantos.slice(4).map((canto) => (
             <Button
               key={canto.pts}
               variant="outline"
-              className={`h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base transition-colors ${selectedParticipantId !== null ? colorClass.tertiaryButton : "bg-gray-50/80 border-gray-200 text-gray-400 cursor-not-allowed"}`}
-              onClick={() => {
-                if (selectedParticipantId !== null) {
-                  onAddPoints(selectedParticipantId, canto.pts);
-                  setSelectedParticipantId(null);
-                }
-              }}
-              disabled={selectedParticipantId === null}
+              className={`h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base ${secondaryBtnClass}`}
+              onClick={() => addPoints(canto.pts)}
+              disabled={!hasSelection}
             >
               {canto.label}
             </Button>
           ))}
           <Button
             variant="outline"
-            className={`h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 transition-colors text-pink-600 ${selectedParticipantId === null ? "opacity-50 cursor-not-allowed" : ""}`}
+            className="h-9 md:h-11 lg:h-12 text-xs md:text-sm lg:text-base border-pink-300 bg-pink-50/80 hover:bg-pink-100/80 text-pink-600 dark:border-pink-800 dark:bg-pink-950/40 dark:hover:bg-pink-900/40 dark:text-pink-400"
             onClick={() => {
               if (selectedParticipantId !== null) {
                 setSelectedPlayerId(selectedParticipantId);
@@ -286,9 +330,9 @@ export const ScoreBoard = memo(function ScoreBoard({
                 setSelectedParticipantId(null);
               }
             }}
-            disabled={selectedParticipantId === null}
+            disabled={!hasSelection}
           >
-            Custom
+            Otro
           </Button>
         </div>
       </div>
@@ -299,8 +343,6 @@ export const ScoreBoard = memo(function ScoreBoard({
     state.teams,
     state.players,
     onAddPoints,
-    setSelectedPlayerId,
-    setCustomPointsOpen,
   ]);
 
   const handleResetPoints = useCallback(async () => {
@@ -334,59 +376,64 @@ export const ScoreBoard = memo(function ScoreBoard({
   );
 
   return (
-    <div className="flex flex-col h-screen max-w-md md:max-w-2xl lg:max-w-4xl mx-auto p-4 md:p-6 lg:p-8 justify-between bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 text-gray-800 select-none overflow-y-auto">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-2 md:mb-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleResetPoints}
-          className="border-purple-300 text-purple-600 hover:bg-purple-100/50"
-        >
-          Reiniciar Puntos
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleResetSeries}
-          className="border-pink-300 text-pink-600 hover:bg-pink-100/50"
-        >
-          Nueva Serie
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleResetAll}
-          className="border-red-300 text-red-600 hover:bg-red-100/50"
-        >
-          Nueva Partida
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onUndo}
-          disabled={state.history.length === 0}
-          className="text-gray-700 hover:bg-white/60"
-        >
-          Deshacer
-        </Button>
+    <div className="flex flex-col h-dvh max-w-md md:max-w-2xl lg:max-w-4xl mx-auto p-4 md:p-6 lg:p-8 justify-between bg-linear-to-br from-pink-100/60 via-purple-50/80 to-blue-100/50 dark:from-purple-950/50 dark:via-background dark:to-blue-950/40 text-foreground select-none overflow-y-auto">
+      <div className="flex items-start gap-2 mb-2 md:mb-4">
+        <div className="grid flex-1 grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleResetPoints}
+            className="border-primary/40 text-primary hover:bg-primary/10"
+          >
+            <RotateCcw />
+            Reiniciar Puntos
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleResetSeries}
+            className="border-pink-300 text-pink-600 hover:bg-pink-500/10 dark:border-pink-800 dark:text-pink-400"
+          >
+            <RefreshCcw />
+            Nueva Serie
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleResetAll}
+            className="border-destructive/40 text-destructive hover:bg-destructive/10"
+          >
+            <Sparkles />
+            Nueva Partida
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onUndo}
+            disabled={state.history.length === 0}
+          >
+            <Undo2 />
+            Deshacer
+          </Button>
+        </div>
+        <ThemeToggle />
       </div>
 
       {renderPlayers()}
 
       {state.isFinished ? (
-        <Card className="bg-purple-100/80 border-purple-300 p-4 md:p-6 lg:p-8 text-center my-2 md:my-4 shadow-lg">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-purple-700">
+        <Card className="bg-primary/10 border-primary/30 p-4 md:p-6 lg:p-8 text-center my-2 md:my-4 shadow-lg motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:slide-in-from-bottom-2 motion-safe:duration-300">
+          <h2 className="flex items-center justify-center gap-2 text-xl md:text-2xl lg:text-3xl font-bold text-primary">
+            <Trophy className="size-6 md:size-7" />
             ¡Ganador: {state.winnerName}!
           </h2>
           <div className="flex gap-2 mt-3">
-            <Button
-              className="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold"
-              onClick={onNextMatch}
-            >
+            <Button className="flex-1 font-bold" onClick={onNextMatch}>
               Siguiente Partida
             </Button>
             <Button
-              className="flex-1 border-purple-300 text-white  hover:bg-purple-100/50"
+              variant="outline"
+              className="flex-1 border-primary/40 text-primary hover:bg-primary/10"
               onClick={handleResetPoints}
             >
               Reiniciar Puntos
