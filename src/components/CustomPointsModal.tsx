@@ -53,7 +53,10 @@ export function CustomPointsModal({
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="text-4xl font-black tabular-nums text-primary text-center py-4">
+          <div
+            key={displayValue}
+            className="text-4xl font-black tabular-nums text-primary text-center py-4 motion-safe:animate-in motion-safe:zoom-in-75 motion-safe:duration-150"
+          >
             {displayValue}
           </div>
           <NumericKeypad

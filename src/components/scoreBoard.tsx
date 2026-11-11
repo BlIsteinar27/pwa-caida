@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GameSetupModal } from "./GameSetupModal";
 import { CustomPointsModal } from "./CustomPointsModal";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { Confetti } from "./Confetti";
 import { ThemeToggle } from "./ThemeToggle";
 import { useConfirmations } from "../utils/confirmations";
 import { useState } from "react";
@@ -413,24 +414,27 @@ export function ScoreBoard({
       {renderPlayers()}
 
       {state.isFinished ? (
-        <Card className="bg-primary/10 border-primary/30 p-4 md:p-6 lg:p-8 text-center my-2 md:my-4 shadow-lg motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:slide-in-from-bottom-2 motion-safe:duration-300">
-          <h2 className="flex items-center justify-center gap-2 text-xl md:text-2xl lg:text-3xl font-bold text-primary">
-            <Trophy className="size-6 md:size-7" />
-            ¡Ganador: {state.winnerName}!
-          </h2>
-          <div className="flex gap-2 mt-3">
-            <Button className="flex-1 font-bold" onClick={onNextMatch}>
-              Siguiente Partida
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1 border-primary/40 text-primary hover:bg-primary/10"
-              onClick={handleResetPoints}
-            >
-              Reiniciar Puntos
-            </Button>
-          </div>
-        </Card>
+        <>
+          <Confetti />
+          <Card className="bg-primary/10 border-primary/30 p-4 md:p-6 lg:p-8 text-center my-2 md:my-4 shadow-lg motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:slide-in-from-bottom-2 motion-safe:duration-300">
+            <h2 className="flex items-center justify-center gap-2 text-xl md:text-2xl lg:text-3xl font-bold text-primary">
+              <Trophy className="size-6 md:size-7" />
+              ¡Ganador: {state.winnerName}!
+            </h2>
+            <div className="flex flex-wrap gap-2 mt-3">
+              <Button className="flex-1 font-bold" onClick={onNextMatch}>
+                Siguiente Partida
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 border-primary/40 text-primary hover:bg-primary/10"
+                onClick={handleResetPoints}
+              >
+                Reiniciar Puntos
+              </Button>
+            </div>
+          </Card>
+        </>
       ) : (
         renderPointButtons()
       )}
