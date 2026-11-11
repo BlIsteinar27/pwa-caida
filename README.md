@@ -17,7 +17,10 @@ Aplicación web progresiva (PWA) para llevar el puntaje del juego de cartas "Cai
 - **Sistema de diseño por tokens**: Toda la UI usa tokens semánticos (`bg-card`, `text-foreground`, `bg-primary`, etc.) definidos en `index.css` con variantes claras y oscuras
 - **Íconos Lucide**: Iconografía consistente basada en `lucide-react`
 - **Accesibilidad**: Tarjetas seleccionables con teclado (Enter/Espacio), `aria-pressed`, focus visible y soporte para `prefers-reduced-motion`
-- **Micro-interacciones**: Press-scale en controles, animación del puntaje al cambiar y entrada animada de la tarjeta de ganador
+- **Micro-interacciones**: Press-scale en controles, animación del puntaje al cambiar, display animado al teclear en el teclado numérico y entrada animada de la tarjeta de ganador
+- **Celebración de victoria**: Lluvia de confeti (80 partículas, 100% CSS/Tailwind sin dependencias, vaivén + rotación + gravedad por partícula, respeta `prefers-reduced-motion`)
+- **Manejo de teclado virtual**: Hook `useVirtualKeyboard` (API VisualViewport) + `interactive-widget=resizes-content` — los diálogos con inputs se mantienen visibles y scrolleables sobre el teclado en Android Chrome e iOS Safari
+- **Layout adaptativo**: Los botones de la tarjeta de ganador se apilan automáticamente cuando no caben en pantallas angostas (`flex-wrap`)
 - **Animaciones tipo acordeón**: En la configuración de partida, las filas de nombres y las secciones se expanden/colapsan suavemente al cambiar de modo (CSS `grid-template-rows` + transiciones, sin librerías de animación)
 - **Diálogos de confirmación**: Prevención de acciones destructivas
 - **Optimización de rendimiento**: React Compiler memoiza automáticamente componentes y cálculos para una experiencia fluida
@@ -84,11 +87,13 @@ src/
 │   ├── ModeSelector.tsx
 │   ├── NameEditor.tsx
 │   ├── NumericKeypad.tsx
+│   ├── Confetti.tsx    # Lluvia de confeti al ganar partida
 │   └── ThemeToggle.tsx # Toggle de modo claro/oscuro
 ├── reducers/           # Reducers de estado
 │   └── gameReducer.ts  # Lógica del juego
 ├── hooks/              # Hooks personalizados
-│   └── useLocalStorage.ts
+│   ├── useLocalStorage.ts
+│   └── useVirtualKeyboard.ts # Detección de teclado virtual (VisualViewport)
 ├── types/              # Definiciones TypeScript
 │   └── game.ts
 ├── utils/              # Utilidades
@@ -112,11 +117,18 @@ Los datos se persisten automáticamente en localStorage con la clave `caida-game
 
 El tema se alterna con el botón ☀️/🌙 en la esquina superior derecha y se persiste en localStorage con la clave `caida-theme`. Si no hay preferencia guardada, se usa `prefers-color-scheme` del sistema. La clase `.dark` se aplica en `<html>` antes del primer render para evitar flash de tema incorrecto.
 
+## Teclado virtual en móvil
+
+Desde Chrome 108, tanto Android como iOS solo redimensionan el **visual viewport** al abrir el teclado — `100dvh` y `position: fixed` no cambian, así que un diálogo centrado queda oculto detrás del teclado sin poder scrollearlo. La app lo resuelve en dos capas:
+
+- **`interactive-widget=resizes-content`** en el meta viewport: Chrome Android redimensiona el layout completo y los diálogos se reposicionan solos
+- **`useVirtualKeyboard`** (iOS y fallback): mide la altura cubierta vía `visualViewport` (`innerHeight − height − offsetTop`), publica `--keyboard-height` en `:root` para compensación por CSS, y hace `scrollIntoView` del input enfocado
+
 ## Optimizaciones de rendimiento
 
 La aplicación implementa varias optimizaciones para garantizar una experiencia fluida:
 
-- **React Compiler**: La memoización de componentes, valores y handlers es automática — no se usan `memo`, `useMemo` ni `useCallback` manuales
+- **React Compiler**: La memoización de componentes, valores y handlers es automática — `useMemo` solo se usa donde hace falta estabilidad de valores aleatorios (partículas del confeti)
 - **Animaciones solo con CSS**: Todas las animaciones usan utilidades de Tailwind + `tw-animate-css` y transiciones CSS, sin librerías de animación en JS — bundle más ligero y animaciones aceleradas por GPU
 - **Optimización de localStorage**: Las escrituras en storage se hacen con debounce vía `useLocalStorage` y el efecto de persistencia usa `useEffectEvent` (React 19.2)
 - **Keys estables**: Las listas usan keys compuestos para evitar problemas de renderizado
